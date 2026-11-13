@@ -228,7 +228,7 @@ export const AdminCmsPage = () => {
     return (
       <div className="py-20 text-center">
         <div className="w-8 h-8 border-3 border-slate-900 border-t-transparent rounded-full animate-spin mx-auto" />
-        <p className="text-xs text-slate-500 mt-3 font-medium">Loading CMS configuration...</p>
+        <p className="text-xs text-[#64748B] mt-3 font-medium">Loading CMS configuration...</p>
       </div>
     );
   }
@@ -249,10 +249,10 @@ export const AdminCmsPage = () => {
   return (
     <div className="space-y-6">
       {/* Page Title & Save Button */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1E293B] pb-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Website Content CMS</h1>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h1 className="text-xl sm:text-2xl font-bold text-[#F8FAFC] tracking-tight">Website Content CMS</h1>
+          <p className="text-xs text-[#64748B] mt-0.5">
             Manage public website copy, banners, coordinates, FAQs, and visitor inquiries.
           </p>
         </div>
@@ -277,7 +277,7 @@ export const AdminCmsPage = () => {
       </div>
 
       {/* Understated Administrative Tabs */}
-      <div className="flex border-b border-slate-200 text-xs font-medium gap-1 overflow-x-auto">
+      <div className="flex border-b border-[#1E293B] text-xs font-medium gap-1 overflow-x-auto">
         {tabs.map((t) => {
           const Icon = t.icon;
           return (
@@ -286,14 +286,14 @@ export const AdminCmsPage = () => {
               onClick={() => setActiveTab(t.id)}
               className={`py-2.5 px-3.5 border-b-2 transition flex items-center gap-2 whitespace-nowrap cursor-pointer ${
                 activeTab === t.id
-                  ? 'border-slate-900 text-slate-900 font-semibold'
-                  : 'border-transparent text-slate-500 hover:text-slate-800'
+                  ? 'border-slate-900 text-[#F8FAFC] font-semibold'
+                  : 'border-transparent text-[#64748B] hover:text-[#F8FAFC]'
               }`}
             >
               <Icon className="w-4 h-4" />
               <span>{t.label}</span>
               {t.badge > 0 && (
-                <span className="bg-slate-100 text-slate-800 text-[10px] px-1.5 py-0.2 rounded font-semibold border border-slate-200">
+                <span className="bg-[#070B14] text-[#F8FAFC] text-[10px] px-1.5 py-0.2 rounded font-semibold border border-[#1E293B]">
                   {t.badge}
                 </span>
               )}
@@ -304,15 +304,15 @@ export const AdminCmsPage = () => {
 
       {/* TAB 1: HERO & BANNERS */}
       {activeTab === 'hero' && (
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4 max-w-3xl text-xs">
-          <div className="border-b border-slate-100 pb-3">
-            <h3 className="font-bold text-slate-900 text-sm">Homepage Hero Section</h3>
-            <p className="text-slate-500 text-[11px] mt-0.5">Control the primary banner on the homepage.</p>
+        <div className="bg-[#101A2C] rounded-xl border border-[#1E293B] p-6 shadow-sm space-y-4 max-w-3xl text-xs">
+          <div className="border-b border-[#1E293B]/60 pb-3">
+            <h3 className="font-bold text-[#F8FAFC] text-sm">Homepage Hero Section</h3>
+            <p className="text-[#64748B] text-[11px] mt-0.5">Control the primary banner on the homepage.</p>
           </div>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-slate-700 font-semibold mb-1">Eyebrow Badge Text</label>
+              <label className="block text-[#94A3B8] font-semibold mb-1">Eyebrow Badge Text</label>
               <input
                 type="text"
                 value={settings?.hero?.badge || ''}
@@ -322,12 +322,12 @@ export const AdminCmsPage = () => {
                     hero: { ...settings.hero, badge: e.target.value }
                   })
                 }
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                className="w-full px-3 py-2 border border-[#1E293B] rounded-lg text-[#F8FAFC] focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
               />
             </div>
 
             <div>
-              <label className="block text-slate-700 font-semibold mb-1">Main Headline *</label>
+              <label className="block text-[#94A3B8] font-semibold mb-1">Main Headline *</label>
               <input
                 type="text"
                 value={settings?.hero?.heading || ''}
@@ -337,12 +337,12 @@ export const AdminCmsPage = () => {
                     hero: { ...settings.hero, heading: e.target.value }
                   })
                 }
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg font-bold text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                className="w-full px-3 py-2 border border-[#1E293B] rounded-lg font-bold text-[#F8FAFC] focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
               />
             </div>
 
             <div>
-              <label className="block text-slate-700 font-semibold mb-1">Subheading Description</label>
+              <label className="block text-[#94A3B8] font-semibold mb-1">Subheading Description</label>
               <textarea
                 value={settings?.hero?.subheading || ''}
                 onChange={(e) =>
@@ -352,13 +352,13 @@ export const AdminCmsPage = () => {
                   })
                 }
                 rows={3}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg leading-relaxed focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                className="w-full px-3 py-2 border border-[#1E293B] rounded-lg leading-relaxed focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-slate-700 font-semibold mb-1">Primary Button Label</label>
+                <label className="block text-[#94A3B8] font-semibold mb-1">Primary Button Label</label>
                 <input
                   type="text"
                   value={settings?.hero?.primaryCtaText || ''}
@@ -368,11 +368,11 @@ export const AdminCmsPage = () => {
                       hero: { ...settings.hero, primaryCtaText: e.target.value }
                     })
                   }
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                  className="w-full px-3 py-2 border border-[#1E293B] rounded-lg text-[#F8FAFC] focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
                 />
               </div>
               <div>
-                <label className="block text-slate-700 font-semibold mb-1">Primary Button Link</label>
+                <label className="block text-[#94A3B8] font-semibold mb-1">Primary Button Link</label>
                 <input
                   type="text"
                   value={settings?.hero?.primaryCtaLink || ''}
@@ -382,20 +382,20 @@ export const AdminCmsPage = () => {
                       hero: { ...settings.hero, primaryCtaLink: e.target.value }
                     })
                   }
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono text-[11px] focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                  className="w-full px-3 py-2 border border-[#1E293B] rounded-lg font-mono text-[11px] focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
                 />
               </div>
             </div>
 
             {/* Hero Image */}
-            <div className="p-4 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
-              <label className="block text-slate-800 font-semibold">Hero Showcase Image</label>
+            <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] space-y-2">
+              <label className="block text-[#F8FAFC] font-semibold">Hero Showcase Image</label>
               <div className="flex items-center gap-3">
                 {settings?.hero?.heroImage && (
                   <img
                     src={settings.hero.heroImage}
                     alt="Hero Preview"
-                    className="w-20 h-14 rounded object-cover border border-slate-300 bg-white shrink-0"
+                    className="w-20 h-14 rounded object-cover border border-[#1E293B] bg-[#101A2C] shrink-0"
                   />
                 )}
                 <div className="flex-1 space-y-1.5">
@@ -409,9 +409,9 @@ export const AdminCmsPage = () => {
                       })
                     }
                     placeholder="Paste image URL or upload file below"
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-lg bg-white text-xs focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                    className="w-full px-3 py-1.5 border border-[#1E293B] rounded-lg bg-[#101A2C] text-xs focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
                   />
-                  <label className="inline-flex items-center gap-1.5 text-xs text-slate-700 font-semibold cursor-pointer hover:underline">
+                  <label className="inline-flex items-center gap-1.5 text-xs text-[#94A3B8] font-semibold cursor-pointer hover:underline">
                     <Upload className="w-3.5 h-3.5" />
                     <span>{isUploadingHeroImg ? 'Uploading...' : 'Upload Image to Media Library'}</span>
                     <input
@@ -431,15 +431,15 @@ export const AdminCmsPage = () => {
 
       {/* TAB 2: ABOUT US */}
       {activeTab === 'about' && (
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4 max-w-3xl text-xs">
-          <div className="border-b border-slate-100 pb-3">
-            <h3 className="font-bold text-slate-900 text-sm">About Us Page & Homepage Preview</h3>
-            <p className="text-slate-500 text-[11px] mt-0.5">Define academic mission, vision, and pedagogy.</p>
+        <div className="bg-[#101A2C] rounded-xl border border-[#1E293B] p-6 shadow-sm space-y-4 max-w-3xl text-xs">
+          <div className="border-b border-[#1E293B]/60 pb-3">
+            <h3 className="font-bold text-[#F8FAFC] text-sm">About Us Page & Homepage Preview</h3>
+            <p className="text-[#64748B] text-[11px] mt-0.5">Define academic mission, vision, and pedagogy.</p>
           </div>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-slate-700 font-semibold mb-1">About Section Title</label>
+              <label className="block text-[#94A3B8] font-semibold mb-1">About Section Title</label>
               <input
                 type="text"
                 value={settings?.about?.heading || ''}
@@ -449,12 +449,12 @@ export const AdminCmsPage = () => {
                     about: { ...settings.about, heading: e.target.value }
                   })
                 }
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg font-bold text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                className="w-full px-3 py-2 border border-[#1E293B] rounded-lg font-bold text-[#F8FAFC] focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
               />
             </div>
 
             <div>
-              <label className="block text-slate-700 font-semibold mb-1">Main Description</label>
+              <label className="block text-[#94A3B8] font-semibold mb-1">Main Description</label>
               <textarea
                 value={settings?.about?.description || ''}
                 onChange={(e) =>
@@ -464,13 +464,13 @@ export const AdminCmsPage = () => {
                   })
                 }
                 rows={4}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg leading-relaxed focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                className="w-full px-3 py-2 border border-[#1E293B] rounded-lg leading-relaxed focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-slate-700 font-semibold mb-1">Mission Statement</label>
+                <label className="block text-[#94A3B8] font-semibold mb-1">Mission Statement</label>
                 <textarea
                   value={settings?.about?.mission || ''}
                   onChange={(e) =>
@@ -480,12 +480,12 @@ export const AdminCmsPage = () => {
                     })
                   }
                   rows={3}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                  className="w-full px-3 py-2 border border-[#1E293B] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-700 font-semibold mb-1">Vision Statement</label>
+                <label className="block text-[#94A3B8] font-semibold mb-1">Vision Statement</label>
                 <textarea
                   value={settings?.about?.vision || ''}
                   onChange={(e) =>
@@ -495,20 +495,20 @@ export const AdminCmsPage = () => {
                     })
                   }
                   rows={3}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                  className="w-full px-3 py-2 border border-[#1E293B] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
                 />
               </div>
             </div>
 
             {/* About Image */}
-            <div className="p-4 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
-              <label className="block text-slate-800 font-semibold">About Section Showcase Image</label>
+            <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] space-y-2">
+              <label className="block text-[#F8FAFC] font-semibold">About Section Showcase Image</label>
               <div className="flex items-center gap-3">
                 {settings?.about?.aboutImage && (
                   <img
                     src={settings.about.aboutImage}
                     alt="About Preview"
-                    className="w-20 h-14 rounded object-cover border border-slate-300 bg-white shrink-0"
+                    className="w-20 h-14 rounded object-cover border border-[#1E293B] bg-[#101A2C] shrink-0"
                   />
                 )}
                 <div className="flex-1 space-y-1.5">
@@ -522,9 +522,9 @@ export const AdminCmsPage = () => {
                       })
                     }
                     placeholder="Image URL or upload file"
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-lg bg-white text-xs focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                    className="w-full px-3 py-1.5 border border-[#1E293B] rounded-lg bg-[#101A2C] text-xs focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
                   />
-                  <label className="inline-flex items-center gap-1.5 text-xs text-slate-700 font-semibold cursor-pointer hover:underline">
+                  <label className="inline-flex items-center gap-1.5 text-xs text-[#94A3B8] font-semibold cursor-pointer hover:underline">
                     <Upload className="w-3.5 h-3.5" />
                     <span>{isUploadingAboutImg ? 'Uploading...' : 'Upload Image File'}</span>
                     <input
@@ -544,17 +544,17 @@ export const AdminCmsPage = () => {
 
       {/* TAB 3: CONTACT COORDINATES */}
       {activeTab === 'contact' && (
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4 max-w-3xl text-xs">
-          <div className="border-b border-slate-100 pb-3">
-            <h3 className="font-bold text-slate-900 text-sm">Institutional Contact Coordinates</h3>
-            <p className="text-slate-500 text-[11px] mt-0.5">
+        <div className="bg-[#101A2C] rounded-xl border border-[#1E293B] p-6 shadow-sm space-y-4 max-w-3xl text-xs">
+          <div className="border-b border-[#1E293B]/60 pb-3">
+            <h3 className="font-bold text-[#F8FAFC] text-sm">Institutional Contact Coordinates</h3>
+            <p className="text-[#64748B] text-[11px] mt-0.5">
               These details populate the public /contact page and footer.
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-slate-700 font-semibold mb-1">Official Support Email</label>
+              <label className="block text-[#94A3B8] font-semibold mb-1">Official Support Email</label>
               <input
                 type="email"
                 value={settings?.contact?.email || ''}
@@ -564,12 +564,12 @@ export const AdminCmsPage = () => {
                     contact: { ...settings.contact, email: e.target.value }
                   })
                 }
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                className="w-full px-3 py-2 border border-[#1E293B] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
               />
             </div>
 
             <div>
-              <label className="block text-slate-700 font-semibold mb-1">Contact Phone</label>
+              <label className="block text-[#94A3B8] font-semibold mb-1">Contact Phone</label>
               <input
                 type="text"
                 value={settings?.contact?.phone || ''}
@@ -579,13 +579,13 @@ export const AdminCmsPage = () => {
                     contact: { ...settings.contact, phone: e.target.value }
                   })
                 }
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                className="w-full px-3 py-2 border border-[#1E293B] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-slate-700 font-semibold mb-1">Campus Physical Address</label>
+            <label className="block text-[#94A3B8] font-semibold mb-1">Campus Physical Address</label>
             <input
               type="text"
               value={settings?.contact?.address || ''}
@@ -595,13 +595,13 @@ export const AdminCmsPage = () => {
                   contact: { ...settings.contact, address: e.target.value }
                 })
               }
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+              className="w-full px-3 py-2 border border-[#1E293B] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-slate-700 font-semibold mb-1">Academic Office Hours</label>
+              <label className="block text-[#94A3B8] font-semibold mb-1">Academic Office Hours</label>
               <input
                 type="text"
                 value={settings?.contact?.workingHours || ''}
@@ -611,12 +611,12 @@ export const AdminCmsPage = () => {
                     contact: { ...settings.contact, workingHours: e.target.value }
                   })
                 }
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                className="w-full px-3 py-2 border border-[#1E293B] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
               />
             </div>
 
             <div>
-              <label className="block text-slate-700 font-semibold mb-1">Response SLA Advisory Notice</label>
+              <label className="block text-[#94A3B8] font-semibold mb-1">Response SLA Advisory Notice</label>
               <input
                 type="text"
                 value={settings?.contact?.supportNotice || ''}
@@ -626,7 +626,7 @@ export const AdminCmsPage = () => {
                     contact: { ...settings.contact, supportNotice: e.target.value }
                   })
                 }
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                className="w-full px-3 py-2 border border-[#1E293B] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
               />
             </div>
           </div>
@@ -635,14 +635,14 @@ export const AdminCmsPage = () => {
 
       {/* TAB 4: INQUIRIES INBOX */}
       {activeTab === 'inquiries' && (
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
-          <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
+        <div className="bg-[#101A2C] rounded-xl border border-[#1E293B] p-6 shadow-sm space-y-4">
+          <div className="border-b border-[#1E293B]/60 pb-3 flex items-center justify-between">
             <div>
-              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
-                <Inbox className="w-4 h-4 text-slate-700" />
+              <h3 className="font-bold text-[#F8FAFC] text-sm flex items-center gap-2">
+                <Inbox className="w-4 h-4 text-[#94A3B8]" />
                 <span>Contact Inquiries Inbox ({inquiries.length})</span>
               </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-[#64748B] mt-0.5">
                 Authentic messages submitted by visitors through the /contact page.
               </p>
             </div>
@@ -660,10 +660,10 @@ export const AdminCmsPage = () => {
                         {inq.status === 'unread' && (
                           <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0" />
                         )}
-                        <span className="font-semibold text-slate-900 text-sm">{inq.subject}</span>
+                        <span className="font-semibold text-[#F8FAFC] text-sm">{inq.subject}</span>
                       </div>
-                      <div className="flex items-center gap-3 text-slate-500 text-[11px] mt-0.5">
-                        <span className="font-medium text-slate-700">{inq.name}</span>
+                      <div className="flex items-center gap-3 text-[#64748B] text-[11px] mt-0.5">
+                        <span className="font-medium text-[#94A3B8]">{inq.name}</span>
                         <span>{inq.email}</span>
                         {inq.phone && <span>{inq.phone}</span>}
                         <span className="font-mono text-slate-400">
@@ -680,8 +680,8 @@ export const AdminCmsPage = () => {
                           inq.status === 'unread'
                             ? 'bg-amber-50 text-amber-700 border-amber-200'
                             : inq.status === 'responded'
-                            ? 'bg-slate-100 text-slate-700 border-slate-200'
-                            : 'bg-slate-50 text-slate-600 border-slate-200'
+                            ? 'bg-[#070B14] text-[#94A3B8] border-[#1E293B]'
+                            : 'bg-[#0B1220] text-slate-600 border-[#1E293B]'
                         }`}
                       >
                         <option value="unread">Unread</option>
@@ -699,7 +699,7 @@ export const AdminCmsPage = () => {
                     </div>
                   </div>
 
-                  <p className="p-3 bg-slate-50 rounded-lg text-slate-700 leading-relaxed border border-slate-200 text-xs">
+                  <p className="p-3 bg-[#0B1220] rounded-lg text-[#94A3B8] leading-relaxed border border-[#1E293B] text-xs">
                     {inq.message}
                   </p>
                 </div>
@@ -711,10 +711,10 @@ export const AdminCmsPage = () => {
 
       {/* TAB 5: SECTION VISIBILITY */}
       {activeTab === 'sections' && (
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4 max-w-xl text-xs">
-          <div className="border-b border-slate-100 pb-3">
-            <h3 className="font-bold text-slate-900 text-sm">Homepage Section Visibility</h3>
-            <p className="text-slate-500 text-[11px] mt-0.5">
+        <div className="bg-[#101A2C] rounded-xl border border-[#1E293B] p-6 shadow-sm space-y-4 max-w-xl text-xs">
+          <div className="border-b border-[#1E293B]/60 pb-3">
+            <h3 className="font-bold text-[#F8FAFC] text-sm">Homepage Section Visibility</h3>
+            <p className="text-[#64748B] text-[11px] mt-0.5">
               Toggle sections on or off on the public landing page.
             </p>
           </div>
@@ -730,7 +730,7 @@ export const AdminCmsPage = () => {
               { key: 'showAnnouncements', label: 'Platform Announcements Banner' }
             ].map(({ key, label }) => (
               <div key={key} className="py-2.5 flex items-center justify-between">
-                <span className="font-medium text-slate-800">{label}</span>
+                <span className="font-medium text-[#F8FAFC]">{label}</span>
                 <input
                   type="checkbox"
                   checked={!!settings?.sectionsVisibility?.[key]}
@@ -743,7 +743,7 @@ export const AdminCmsPage = () => {
                       }
                     })
                   }
-                  className="rounded text-slate-900 w-4 h-4 cursor-pointer"
+                  className="rounded text-[#F8FAFC] w-4 h-4 cursor-pointer"
                 />
               </div>
             ))}
@@ -753,11 +753,11 @@ export const AdminCmsPage = () => {
 
       {/* TAB 6: FAQS MANAGER */}
       {activeTab === 'faqs' && (
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="bg-[#101A2C] rounded-xl border border-[#1E293B] p-6 shadow-sm space-y-4">
+          <div className="flex items-center justify-between border-b border-[#1E293B]/60 pb-3">
             <div>
-              <h3 className="font-bold text-slate-900 text-sm">Frequently Asked Questions</h3>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <h3 className="font-bold text-[#F8FAFC] text-sm">Frequently Asked Questions</h3>
+              <p className="text-xs text-[#64748B] mt-0.5">
                 Questions shown in the FAQ accordion on the public website.
               </p>
             </div>
@@ -779,7 +779,7 @@ export const AdminCmsPage = () => {
             {settings?.faqs?.map((faq) => (
               <div key={faq._id} className="py-3 flex items-start justify-between gap-4">
                 <div className="space-y-1">
-                  <h4 className="font-semibold text-slate-900">{faq.question}</h4>
+                  <h4 className="font-semibold text-[#F8FAFC]">{faq.question}</h4>
                   <p className="text-slate-600 leading-relaxed">{faq.answer}</p>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
@@ -790,7 +790,7 @@ export const AdminCmsPage = () => {
                       setFaqAnswer(faq.answer);
                       setFaqModalOpen(true);
                     }}
-                    className="p-1.5 text-slate-400 hover:text-slate-900 cursor-pointer"
+                    className="p-1.5 text-slate-400 hover:text-[#F8FAFC] cursor-pointer"
                   >
                     <Edit className="w-3.5 h-3.5" />
                   </button>
@@ -809,11 +809,11 @@ export const AdminCmsPage = () => {
 
       {/* TAB 7: ANNOUNCEMENTS */}
       {activeTab === 'announcements' && (
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="bg-[#101A2C] rounded-xl border border-[#1E293B] p-6 shadow-sm space-y-4">
+          <div className="flex items-center justify-between border-b border-[#1E293B]/60 pb-3">
             <div>
-              <h3 className="font-bold text-slate-900 text-sm">Platform Announcements</h3>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <h3 className="font-bold text-[#F8FAFC] text-sm">Platform Announcements</h3>
+              <p className="text-xs text-[#64748B] mt-0.5">
                 Top notification bar displayed across public platform.
               </p>
             </div>
@@ -833,14 +833,14 @@ export const AdminCmsPage = () => {
               settings?.announcements?.map((ann) => (
                 <div
                   key={ann._id}
-                  className="p-3 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-between"
+                  className="p-3 rounded-lg border border-[#1E293B] bg-[#0B1220] flex items-center justify-between"
                 >
                   <div className="space-y-0.5">
                     <div className="flex items-center gap-2">
-                      <span className="bg-slate-200 text-slate-800 text-[10px] font-semibold px-2 py-0.5 rounded uppercase">
+                      <span className="bg-slate-200 text-[#F8FAFC] text-[10px] font-semibold px-2 py-0.5 rounded uppercase">
                         {ann.badge}
                       </span>
-                      <span className="font-semibold text-slate-900">{ann.title}</span>
+                      <span className="font-semibold text-[#F8FAFC]">{ann.title}</span>
                     </div>
                     <p className="text-slate-600 text-[11px]">{ann.content}</p>
                   </div>
@@ -859,12 +859,12 @@ export const AdminCmsPage = () => {
 
       {/* TAB 8: FOOTER */}
       {activeTab === 'footer' && (
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4 max-w-2xl text-xs">
-          <div className="border-b border-slate-100 pb-3">
-            <h3 className="font-bold text-slate-900 text-sm">Footer Content Settings</h3>
+        <div className="bg-[#101A2C] rounded-xl border border-[#1E293B] p-6 shadow-sm space-y-4 max-w-2xl text-xs">
+          <div className="border-b border-[#1E293B]/60 pb-3">
+            <h3 className="font-bold text-[#F8FAFC] text-sm">Footer Content Settings</h3>
           </div>
           <div>
-            <label className="block text-slate-700 font-semibold mb-1">Footer About Text</label>
+            <label className="block text-[#94A3B8] font-semibold mb-1">Footer About Text</label>
             <textarea
               value={settings?.footer?.aboutText || ''}
               onChange={(e) =>
@@ -874,12 +874,12 @@ export const AdminCmsPage = () => {
                 })
               }
               rows={3}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg leading-relaxed focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+              className="w-full px-3 py-2 border border-[#1E293B] rounded-lg leading-relaxed focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
             />
           </div>
 
           <div>
-            <label className="block text-slate-700 font-semibold mb-1">Copyright Notice</label>
+            <label className="block text-[#94A3B8] font-semibold mb-1">Copyright Notice</label>
             <input
               type="text"
               value={settings?.footer?.copyrightText || ''}
@@ -889,7 +889,7 @@ export const AdminCmsPage = () => {
                   footer: { ...settings.footer, copyrightText: e.target.value }
                 })
               }
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+              className="w-full px-3 py-2 border border-[#1E293B] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
             />
           </div>
         </div>
@@ -898,30 +898,30 @@ export const AdminCmsPage = () => {
       {/* FAQ MODAL */}
       {faqModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-          <div className="bg-white rounded-xl max-w-md w-full p-6 shadow-xl border border-slate-200 space-y-4">
-            <h3 className="font-bold text-slate-900 text-sm">{editingFaqId ? 'Edit FAQ' : 'Add FAQ'}</h3>
+          <div className="bg-[#101A2C] rounded-xl max-w-md w-full p-6 shadow-xl border border-[#1E293B] space-y-4">
+            <h3 className="font-bold text-[#F8FAFC] text-sm">{editingFaqId ? 'Edit FAQ' : 'Add FAQ'}</h3>
             <form onSubmit={handleSaveFaq} className="space-y-3.5 text-xs">
               <div>
-                <label className="block text-slate-700 font-semibold mb-1">Question *</label>
+                <label className="block text-[#94A3B8] font-semibold mb-1">Question *</label>
                 <input
                   type="text"
                   value={faqQuestion}
                   onChange={(e) => setFaqQuestion(e.target.value)}
                   required
                   placeholder="e.g. How does course doubt support work?"
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                  className="w-full px-3 py-2 border border-[#1E293B] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-700 font-semibold mb-1">Answer *</label>
+                <label className="block text-[#94A3B8] font-semibold mb-1">Answer *</label>
                 <textarea
                   value={faqAnswer}
                   onChange={(e) => setFaqAnswer(e.target.value)}
                   required
                   rows={3}
                   placeholder="Clear and informative answer..."
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                  className="w-full px-3 py-2 border border-[#1E293B] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
                 />
               </div>
 
@@ -929,7 +929,7 @@ export const AdminCmsPage = () => {
                 <button
                   type="button"
                   onClick={() => setFaqModalOpen(false)}
-                  className="px-3.5 py-1.5 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50 cursor-pointer"
+                  className="px-3.5 py-1.5 border border-[#1E293B] rounded-lg text-slate-600 hover:bg-[#0B1220] cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -948,52 +948,52 @@ export const AdminCmsPage = () => {
       {/* ANNOUNCEMENT MODAL */}
       {announcementModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-          <div className="bg-white rounded-xl max-w-md w-full p-6 shadow-xl border border-slate-200 space-y-4">
-            <h3 className="font-bold text-slate-900 text-sm">Post Announcement</h3>
+          <div className="bg-[#101A2C] rounded-xl max-w-md w-full p-6 shadow-xl border border-[#1E293B] space-y-4">
+            <h3 className="font-bold text-[#F8FAFC] text-sm">Post Announcement</h3>
             <form onSubmit={handleSaveAnnouncement} className="space-y-3.5 text-xs">
               <div>
-                <label className="block text-slate-700 font-semibold mb-1">Badge</label>
+                <label className="block text-[#94A3B8] font-semibold mb-1">Badge</label>
                 <input
                   type="text"
                   value={annBadge}
                   onChange={(e) => setAnnBadge(e.target.value)}
                   placeholder="e.g. Important, New Cohort, Update"
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                  className="w-full px-3 py-2 border border-[#1E293B] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-700 font-semibold mb-1">Announcement Title *</label>
+                <label className="block text-[#94A3B8] font-semibold mb-1">Announcement Title *</label>
                 <input
                   type="text"
                   value={annTitle}
                   onChange={(e) => setAnnTitle(e.target.value)}
                   required
                   placeholder="Short headline"
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg font-semibold focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                  className="w-full px-3 py-2 border border-[#1E293B] rounded-lg font-semibold focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-700 font-semibold mb-1">Content *</label>
+                <label className="block text-[#94A3B8] font-semibold mb-1">Content *</label>
                 <textarea
                   value={annContent}
                   onChange={(e) => setAnnContent(e.target.value)}
                   required
                   rows={2}
                   placeholder="Detailed announcement copy..."
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                  className="w-full px-3 py-2 border border-[#1E293B] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-700 font-semibold mb-1">Action Link (Optional)</label>
+                <label className="block text-[#94A3B8] font-semibold mb-1">Action Link (Optional)</label>
                 <input
                   type="text"
                   value={annLink}
                   onChange={(e) => setAnnLink(e.target.value)}
                   placeholder="/courses or external link"
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono text-[11px] focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                  className="w-full px-3 py-2 border border-[#1E293B] rounded-lg font-mono text-[11px] focus:outline-none focus:ring-1 focus:ring-[#38BDF8] focus:border-[#38BDF8]"
                 />
               </div>
 
@@ -1001,7 +1001,7 @@ export const AdminCmsPage = () => {
                 <button
                   type="button"
                   onClick={() => setAnnouncementModalOpen(false)}
-                  className="px-3.5 py-1.5 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50 cursor-pointer"
+                  className="px-3.5 py-1.5 border border-[#1E293B] rounded-lg text-slate-600 hover:bg-[#0B1220] cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -1019,3 +1019,4 @@ export const AdminCmsPage = () => {
     </div>
   );
 };
+

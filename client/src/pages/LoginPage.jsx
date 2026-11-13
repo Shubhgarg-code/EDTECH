@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import { GraduationCap, Mail, Lock, Loader2, ArrowRight } from 'lucide-react';
+import { GraduationCap, Mail, Lock, Loader2, ArrowRight, Eye, EyeOff } from 'lucide-react';
 
 export const LoginPage = () => {
   const { login } = useAuth();
@@ -12,6 +12,7 @@ export const LoginPage = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const returnTo = location.state?.returnTo || '/dashboard';
@@ -36,69 +37,76 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full bg-white rounded-xl p-8 border border-slate-200/90 shadow-xl space-y-6">
+    <div className="min-h-[80vh] flex items-center justify-center px-4 py-16 bg-[#070B14]">
+      <div className="max-w-md w-full bg-[#101A2C] rounded-2xl p-8 border border-[#3B82F6]/30 shadow-2xl space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center mx-auto">
-            <GraduationCap className="w-6 h-6 text-slate-100" />
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#2563EB] to-[#3B82F6] text-white flex items-center justify-center mx-auto shadow-lg shadow-blue-500/25">
+            <GraduationCap className="w-6 h-6 text-white" />
           </div>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight">
-            Sign In
+          <h2 className="text-2xl font-black text-[#F8FAFC] tracking-tight">
+            Sign In to Academy
           </h2>
-          <p className="text-xs text-slate-500">
-            Access your courses, lessons, and study materials
+          <p className="text-xs text-[#A7B5CC]">
+            Access your mathematics courses, lectures, and notes
           </p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+            <label className="block font-semibold text-[#F8FAFC] mb-1.5">
               Email Address
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+              <Mail className="w-4 h-4 text-[#3B82F6] absolute left-3.5 top-3.5" />
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@example.com"
+                placeholder="student@mathacademy.in"
                 required
-                className="w-full pl-10 pr-4 py-2.5 text-xs rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#070B14] border border-[#3B82F6]/30 text-[#F8FAFC] placeholder-[#A7B5CC]/40 focus:outline-none focus:ring-2 focus:ring-[#3B82F6] transition"
               />
             </div>
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-semibold text-slate-700">
+              <label className="block font-semibold text-[#F8FAFC]">
                 Password
               </label>
               <Link
                 to="/forgot-password"
-                className="text-[11px] font-semibold text-blue-600 hover:underline"
+                className="text-[11px] font-semibold text-[#60A5FA] hover:underline"
               >
                 Forgot Password?
               </Link>
             </div>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+              <Lock className="w-4 h-4 text-[#3B82F6] absolute left-3.5 top-3.5" />
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
-                className="w-full pl-10 pr-4 py-2.5 text-xs rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-[#070B14] border border-[#3B82F6]/30 text-[#F8FAFC] placeholder-[#A7B5CC]/40 focus:outline-none focus:ring-2 focus:ring-[#3B82F6] transition"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-3 text-[#A7B5CC] hover:text-[#F8FAFC] cursor-pointer"
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
             </div>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-lg shadow-sm flex items-center justify-center gap-2 transition disabled:opacity-50 active:scale-[0.98]"
+            className="w-full py-3 bg-gradient-to-r from-[#2563EB] to-[#3B82F6] hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transition disabled:opacity-50 active:scale-[0.98] cursor-pointer"
           >
             {loading ? (
               <>
@@ -114,10 +122,10 @@ export const LoginPage = () => {
           </button>
         </form>
 
-        <p className="text-center text-xs text-slate-500">
+        <p className="text-center text-xs text-[#A7B5CC]">
           New to Mathematics Academy?{' '}
-          <Link to="/register" className="font-bold text-blue-600 hover:underline">
-            Create an Account
+          <Link to="/register" className="font-bold text-[#60A5FA] hover:underline">
+            Register for Free
           </Link>
         </p>
       </div>

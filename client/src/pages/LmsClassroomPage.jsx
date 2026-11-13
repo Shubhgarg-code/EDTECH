@@ -233,22 +233,22 @@ export const LmsClassroomPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-[#070B14] text-[#F8FAFC] flex flex-col font-sans">
       {/* Top Classroom Bar */}
-      <header className="h-14 bg-slate-950 border-b border-slate-800 px-4 sm:px-6 flex items-center justify-between z-30 shrink-0">
+      <header className="h-14 bg-[#0B1220] border-b border-[#1E293B] px-4 sm:px-6 flex items-center justify-between z-30 shrink-0 shadow-lg">
         <div className="flex items-center gap-3">
           <Link
             to="/dashboard"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className="p-1.5 rounded-lg text-[#94A3B8] hover:text-white hover:bg-[#101A2C] transition border border-transparent hover:border-[#1E293B]"
             title="Back to Student Dashboard"
           >
             <ChevronLeft className="w-5 h-5" />
           </Link>
           <div className="hidden sm:block">
-            <h1 className="text-xs sm:text-sm font-bold text-white truncate max-w-sm">
+            <h1 className="text-xs sm:text-sm font-bold text-white truncate max-w-sm tracking-tight">
               {course.title}
             </h1>
-            <p className="text-[10px] text-slate-400 font-mono">
+            <p className="text-[10px] text-[#38BDF8] font-mono">
               {course.batchName} • Lecture: {currentLecture?.title}
             </p>
           </div>
@@ -257,13 +257,13 @@ export const LmsClassroomPage = () => {
         {/* Progress & Certificate Button */}
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <div className="hidden sm:block w-28 bg-slate-800 rounded-full h-2 overflow-hidden">
+            <div className="hidden sm:block w-28 bg-[#101A2C] border border-[#1E293B] rounded-full h-2 overflow-hidden">
               <div
-                className="bg-blue-500 h-full rounded-full transition-all duration-300"
+                className="bg-gradient-to-r from-[#2563EB] to-[#38BDF8] h-full rounded-full transition-all duration-300 shadow-[0_0_8px_rgba(56,189,248,0.5)]"
                 style={{ width: `${progress?.percentage || 0}%` }}
               />
             </div>
-            <span className="text-xs font-mono font-bold text-blue-400">
+            <span className="text-xs font-mono font-bold text-[#38BDF8]">
               {progress?.percentage || 0}%
             </span>
           </div>
@@ -271,7 +271,7 @@ export const LmsClassroomPage = () => {
           {progress?.percentage >= 100 ? (
             <button
               onClick={handleClaimCertificate}
-              className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 text-xs font-extrabold flex items-center gap-1.5 shadow-md shadow-amber-500/20 hover:brightness-110 transition active:scale-95"
+              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 text-xs font-black flex items-center gap-1.5 shadow-md shadow-amber-500/20 hover:brightness-110 transition active:scale-95"
             >
               <Award className="w-4 h-4" />
               <span>Claim Certificate</span>
@@ -279,16 +279,16 @@ export const LmsClassroomPage = () => {
           ) : (
             <button
               onClick={() => showToast(`Complete all lectures to unlock certificate (${progress?.percentage || 0}% / 100%)`, 'info')}
-              className="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 text-xs font-semibold flex items-center gap-1.5 cursor-help"
+              className="px-3 py-1.5 rounded-xl bg-[#101A2C] border border-[#1E293B] text-[#94A3B8] text-xs font-semibold flex items-center gap-1.5 cursor-help hover:border-[#38BDF8]/40 transition"
             >
-              <Award className="w-3.5 h-3.5" />
+              <Award className="w-3.5 h-3.5 text-[#38BDF8]" />
               <span>Certificate ({progress?.percentage || 0}%)</span>
             </button>
           )}
 
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition md:hidden"
+            className="p-1.5 rounded-lg text-[#94A3B8] hover:text-white hover:bg-[#101A2C] transition md:hidden"
           >
             {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -298,25 +298,27 @@ export const LmsClassroomPage = () => {
       {/* Main Classroom Body */}
       <div className="flex-1 flex overflow-hidden relative">
         {/* Left Video Stage + Tabs */}
-        <div className="flex-1 flex flex-col overflow-y-auto bg-slate-900">
+        <div className="flex-1 flex flex-col overflow-y-auto bg-[#070B14]">
           <div className="p-4 sm:p-6 max-w-5xl mx-auto w-full space-y-6">
             {/* Video Player Box */}
             <div className="space-y-3">
-              <VideoPlayer
-                src={currentLecture?.videoUrl}
-                title={currentLecture?.title}
-                isCompleted={isCurrentCompleted}
-                onToggleComplete={handleToggleComplete}
-                onProgressUpdate={handleProgressTimeSync}
-                initialTime={progress?.lastWatchTimeSeconds || 0}
-                onNextLecture={handleNextLecture}
-              />
+              <div className="rounded-2xl overflow-hidden border border-[#1E293B] shadow-2xl shadow-black/80 bg-black">
+                <VideoPlayer
+                  src={currentLecture?.videoUrl}
+                  title={currentLecture?.title}
+                  isCompleted={isCurrentCompleted}
+                  onToggleComplete={handleToggleComplete}
+                  onProgressUpdate={handleProgressTimeSync}
+                  initialTime={progress?.lastWatchTimeSeconds || 0}
+                  onNextLecture={handleNextLecture}
+                />
+              </div>
 
               {/* Prev / Next Controls Bar */}
               <div className="flex items-center justify-between text-xs pt-1">
                 <button
                   onClick={handlePrevLecture}
-                  className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium flex items-center gap-1 transition"
+                  className="px-3.5 py-2 rounded-xl bg-[#101A2C] hover:bg-[#14213A] text-[#94A3B8] hover:text-white border border-[#1E293B] font-medium flex items-center gap-1.5 transition"
                 >
                   <ChevronLeft className="w-4 h-4" />
                   <span>Previous Lecture</span>
@@ -325,10 +327,10 @@ export const LmsClassroomPage = () => {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleToggleComplete(!isCurrentCompleted)}
-                    className={`px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition ${
+                    className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-lg ${
                       isCurrentCompleted
-                        ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                        : 'bg-blue-600 hover:bg-blue-700 text-white'
+                        ? 'bg-emerald-600/90 hover:bg-emerald-600 text-white shadow-emerald-900/30'
+                        : 'bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] hover:brightness-110 text-white shadow-blue-900/30'
                     }`}
                   >
                     <CheckCircle2 className="w-4 h-4" />
@@ -337,7 +339,7 @@ export const LmsClassroomPage = () => {
 
                   <button
                     onClick={handleNextLecture}
-                    className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium flex items-center gap-1 transition"
+                    className="px-3.5 py-2 rounded-xl bg-[#101A2C] hover:bg-[#14213A] text-[#94A3B8] hover:text-white border border-[#1E293B] font-medium flex items-center gap-1.5 transition"
                   >
                     <span>Next Lecture</span>
                     <ChevronRight className="w-4 h-4" />
@@ -347,78 +349,78 @@ export const LmsClassroomPage = () => {
             </div>
 
             {/* Bottom Workspace Tabs */}
-            <div className="bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
+            <div className="bg-[#0B1220] rounded-2xl border border-[#1E293B] overflow-hidden shadow-2xl">
               {/* Tabs Navigation */}
-              <div className="flex border-b border-slate-800 text-xs font-bold overflow-x-auto">
+              <div className="flex border-b border-[#1E293B] text-xs font-bold overflow-x-auto bg-[#070B14]/60">
                 <button
                   onClick={() => setActiveTab('notes')}
                   className={`px-5 py-3.5 border-b-2 transition flex items-center gap-2 whitespace-nowrap ${
                     activeTab === 'notes'
-                      ? 'border-blue-500 text-blue-400 bg-slate-900/50'
-                      : 'border-transparent text-slate-400 hover:text-slate-200'
+                      ? 'border-[#38BDF8] text-[#38BDF8] bg-[#101A2C]/60'
+                      : 'border-transparent text-[#94A3B8] hover:text-[#F8FAFC]'
                   }`}
                 >
                   <FileText className="w-4 h-4" />
-                  <span>Lecture Notes & Explanation</span>
+                  <span>Mathematical Notes & Explanation</span>
                 </button>
 
                 <button
                   onClick={() => setActiveTab('resources')}
                   className={`px-5 py-3.5 border-b-2 transition flex items-center gap-2 whitespace-nowrap ${
                     activeTab === 'resources'
-                      ? 'border-blue-500 text-blue-400 bg-slate-900/50'
-                      : 'border-transparent text-slate-400 hover:text-slate-200'
+                      ? 'border-[#38BDF8] text-[#38BDF8] bg-[#101A2C]/60'
+                      : 'border-transparent text-[#94A3B8] hover:text-[#F8FAFC]'
                   }`}
                 >
                   <BookOpen className="w-4 h-4" />
-                  <span>Study Resources & Downloads ({currentLecture?.resources?.length || 0})</span>
+                  <span>Problem Sets & Handouts ({currentLecture?.resources?.length || 0})</span>
                 </button>
 
                 <button
                   onClick={() => setActiveTab('assignments')}
                   className={`px-5 py-3.5 border-b-2 transition flex items-center gap-2 whitespace-nowrap ${
                     activeTab === 'assignments'
-                      ? 'border-blue-500 text-blue-400 bg-slate-900/50'
-                      : 'border-transparent text-slate-400 hover:text-slate-200'
+                      ? 'border-[#38BDF8] text-[#38BDF8] bg-[#101A2C]/60'
+                      : 'border-transparent text-[#94A3B8] hover:text-[#F8FAFC]'
                   }`}
                 >
                   <Award className="w-4 h-4" />
-                  <span>Assignments & Problem Sets ({assignments.length})</span>
+                  <span>Problem Submissions & Proofs ({assignments.length})</span>
                 </button>
 
                 <button
                   onClick={() => setActiveTab('announcements')}
                   className={`px-5 py-3.5 border-b-2 transition flex items-center gap-2 whitespace-nowrap ${
                     activeTab === 'announcements'
-                      ? 'border-blue-500 text-blue-400 bg-slate-900/50'
-                      : 'border-transparent text-slate-400 hover:text-slate-200'
+                      ? 'border-[#38BDF8] text-[#38BDF8] bg-[#101A2C]/60'
+                      : 'border-transparent text-[#94A3B8] hover:text-[#F8FAFC]'
                   }`}
                 >
                   <Bell className="w-4 h-4" />
-                  <span>Course Announcements</span>
+                  <span>Faculty Announcements</span>
                 </button>
               </div>
 
               {/* Tab Contents */}
-              <div className="p-6 text-xs leading-relaxed text-slate-300">
+              <div className="p-6 text-xs leading-relaxed text-[#A7B5CC]">
                 {/* 1. Lecture Notes */}
                 {activeTab === 'notes' && (
                   <div className="space-y-4">
                     <h3 className="text-base font-bold text-white">{currentLecture?.title}</h3>
                     {currentLecture?.notesContent ? (
-                      <div className="prose prose-invert max-w-none text-slate-300 space-y-3 font-mono text-xs whitespace-pre-wrap bg-slate-900 p-4 rounded-xl border border-slate-800">
+                      <div className="prose prose-invert max-w-none text-[#A7B5CC] space-y-3 font-mono text-xs whitespace-pre-wrap bg-[#101A2C] p-5 rounded-xl border border-[#1E293B]">
                         {currentLecture.notesContent}
                       </div>
                     ) : (
-                      <p className="text-slate-500 italic">No supplemental notes provided for this lecture.</p>
+                      <p className="text-[#64748B] italic">No supplemental mathematical notes provided for this lecture.</p>
                     )}
 
                     {currentLecture?.codeSnippet && (
                       <div className="space-y-2">
-                        <span className="font-bold text-slate-200 uppercase tracking-wide text-[10px]">
-                          Key Formulae & Definitions
+                        <span className="font-bold text-[#38BDF8] uppercase tracking-wide text-[10px]">
+                          Key Theorems, Formulae & Definitions
                         </span>
-                        <pre className="p-4 bg-slate-900 rounded-xl border border-slate-800 text-blue-300 font-mono text-xs overflow-x-auto">
+                        <pre className="p-4 bg-[#101A2C] rounded-xl border border-[#1E293B] text-[#38BDF8] font-mono text-xs overflow-x-auto shadow-inner">
                           {currentLecture.codeSnippet}
                         </pre>
                       </div>
@@ -429,7 +431,7 @@ export const LmsClassroomPage = () => {
                 {/* 2. Resources */}
                 {activeTab === 'resources' && (
                   <div className="space-y-4">
-                    <h3 className="text-sm font-bold text-white">Lecture Downloads & Reference Materials</h3>
+                    <h3 className="text-sm font-bold text-white">Lecture Downloads & Formula Sheets</h3>
                     {currentLecture?.resources?.length > 0 ? (
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {currentLecture.resources.map((res, i) => (
@@ -438,15 +440,15 @@ export const LmsClassroomPage = () => {
                             href={res.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-blue-500 hover:bg-slate-800/80 transition flex items-center justify-between group"
+                            className="p-3.5 rounded-xl bg-[#101A2C] border border-[#1E293B] hover:border-[#38BDF8] hover:bg-[#14213A] transition flex items-center justify-between group shadow-sm"
                           >
                             <div className="flex items-center gap-2.5">
                               {res.type === 'pdf' ? (
                                 <FileText className="w-4 h-4 text-rose-400" />
                               ) : (
-                                <Download className="w-4 h-4 text-blue-400" />
+                                <Download className="w-4 h-4 text-[#38BDF8]" />
                               )}
-                              <span className="font-semibold text-slate-200 group-hover:text-blue-400 transition">
+                              <span className="font-semibold text-slate-200 group-hover:text-[#38BDF8] transition">
                                 {res.title}
                               </span>
                             </div>
@@ -455,7 +457,7 @@ export const LmsClassroomPage = () => {
                         ))}
                       </div>
                     ) : (
-                      <p className="text-slate-500">All necessary study materials are covered in the video lesson and notes.</p>
+                      <p className="text-[#64748B]">All necessary derivation steps and materials are covered in the video lesson.</p>
                     )}
                   </div>
                 )}
@@ -464,22 +466,22 @@ export const LmsClassroomPage = () => {
                 {activeTab === 'assignments' && (
                   <div className="space-y-6">
                     {/* Submit Form */}
-                    <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 space-y-4">
+                    <div className="bg-[#101A2C] p-5 rounded-2xl border border-[#1E293B] space-y-4">
                       <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                        <Award className="w-4 h-4 text-blue-400" />
-                        Submit Project / Assignment for Mentor Review
+                        <Award className="w-4 h-4 text-[#38BDF8]" />
+                        Submit Written Solution / Proof for Faculty Review
                       </h3>
 
                       <form onSubmit={handleSubmitAssignment} className="space-y-3">
                         <div>
-                          <label className="block text-slate-400 text-[11px] font-semibold mb-1">
-                            Select Assignment
+                          <label className="block text-[#94A3B8] text-[11px] font-semibold mb-1">
+                            Select Problem Set / Assignment
                           </label>
                           <select
                             value={selectedAssignmentId}
                             onChange={(e) => setSelectedAssignmentId(e.target.value)}
                             required
-                            className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 text-xs focus:ring-1 focus:ring-blue-500"
+                            className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-xl text-slate-200 text-xs focus:ring-1 focus:ring-[#38BDF8] outline-none"
                           >
                             <option value="">-- Choose an Assignment --</option>
                             {assignments.map((a) => (
@@ -492,72 +494,72 @@ export const LmsClassroomPage = () => {
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div>
-                            <label className="block text-slate-400 text-[11px] font-semibold mb-1">
-                              Solution Link (Google Drive / PDF / Image link)
+                            <label className="block text-[#94A3B8] text-[11px] font-semibold mb-1">
+                              Solution Document Link (Google Drive / PDF / Overleaf)
                             </label>
                             <input
                               type="url"
                               value={githubUrl}
                               onChange={(e) => setGithubUrl(e.target.value)}
-                              placeholder="https://drive.google.com/... or link to handwritten solution"
+                              placeholder="https://drive.google.com/... or Overleaf link"
                               required
-                              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 text-xs focus:ring-1 focus:ring-blue-500"
+                              className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-xl text-slate-200 text-xs focus:ring-1 focus:ring-[#38BDF8] outline-none"
                             />
                           </div>
                           <div>
-                            <label className="block text-slate-400 text-[11px] font-semibold mb-1">
-                              Additional Reference URL (Optional)
+                            <label className="block text-[#94A3B8] text-[11px] font-semibold mb-1">
+                              Supplementary Reference URL (Optional)
                             </label>
                             <input
                               type="url"
                               value={liveUrl}
                               onChange={(e) => setLiveUrl(e.target.value)}
                               placeholder="https://..."
-                              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 text-xs focus:ring-1 focus:ring-blue-500"
+                              className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-xl text-slate-200 text-xs focus:ring-1 focus:ring-[#38BDF8] outline-none"
                             />
                           </div>
                         </div>
 
                         <div>
-                          <label className="block text-slate-400 text-[11px] font-semibold mb-1">
-                            Submission Notes / Explanation of Steps
+                          <label className="block text-[#94A3B8] text-[11px] font-semibold mb-1">
+                            Proof Methodology / Steps Explanation
                           </label>
                           <textarea
                             value={submissionNotes}
                             onChange={(e) => setSubmissionNotes(e.target.value)}
                             rows={2}
-                            placeholder="Mention methods used, formulas applied, or questions attempted..."
-                            className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 text-xs focus:ring-1 focus:ring-blue-500"
+                            placeholder="State mathematical lemmas applied, substitution steps, or questions answered..."
+                            className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-xl text-slate-200 text-xs focus:ring-1 focus:ring-[#38BDF8] outline-none"
                           />
                         </div>
 
                         <button
                           type="submit"
                           disabled={isSubmittingAssignment}
-                          className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-2 transition disabled:opacity-50"
+                          className="px-5 py-2.5 bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-900/30 flex items-center gap-2 transition disabled:opacity-50"
                         >
                           <Send className="w-3.5 h-3.5" />
-                          <span>{isSubmittingAssignment ? 'Submitting...' : 'Submit Assignment'}</span>
+                          <span>{isSubmittingAssignment ? 'Submitting...' : 'Submit Solution'}</span>
                         </button>
                       </form>
                     </div>
 
                     {/* Submissions History */}
                     <div className="space-y-3">
-                      <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
-                        My Submissions & Grades
+                      <h4 className="text-xs font-bold text-[#94A3B8] uppercase tracking-wider">
+                        My Submissions & Faculty Grading
                       </h4>
                       {studentSubmissions.length === 0 ? (
-                        <p className="text-slate-500 text-xs italic">No assignments submitted yet.</p>
+                        <p className="text-[#64748B] text-xs italic">No assignments submitted yet.</p>
                       ) : (
                         <div className="space-y-2">
                           {studentSubmissions.map((sub) => (
                             <div
                               key={sub._id}
-                              className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2"
+                              className="p-4 rounded-xl bg-[#101A2C] border border-[#1E293B] space-y-2"
                             >
                               <div className="flex items-center justify-between">
-                                <h5 className="font-bold text-slate-200">{sub.title}</h5>
+                                <h5 className="font-bold text-white">{sub.title}</h5>
                                 <span
                                   className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
                                     sub.status === 'reviewed'
@@ -569,7 +571,7 @@ export const LmsClassroomPage = () => {
                                 </span>
                               </div>
 
-                              <div className="flex gap-4 text-[11px] text-blue-400">
+                              <div className="flex gap-4 text-[11px] text-[#38BDF8]">
                                 {sub.githubUrl && (
                                   <a href={sub.githubUrl} target="_blank" rel="noopener noreferrer" className="hover:underline flex items-center gap-1">
                                     <ExternalLink className="w-3 h-3" /> Solution Link
@@ -583,9 +585,9 @@ export const LmsClassroomPage = () => {
                               </div>
 
                               {sub.feedback && (
-                                <div className="p-3 bg-slate-950 rounded-lg border border-slate-800 text-[11px] space-y-1">
-                                  <p className="text-slate-400 font-semibold">
-                                    Mentor Feedback ({sub.reviewedBy || 'TA'}):
+                                <div className="p-3 bg-[#0B1220] rounded-lg border border-[#1E293B] text-[11px] space-y-1">
+                                  <p className="text-[#94A3B8] font-semibold">
+                                    Faculty Feedback ({sub.reviewedBy || 'Professor'}):
                                   </p>
                                   <p className="text-slate-300 italic">{sub.feedback}</p>
                                 </div>
@@ -601,24 +603,24 @@ export const LmsClassroomPage = () => {
                 {/* 4. Announcements */}
                 {activeTab === 'announcements' && (
                   <div className="space-y-3">
-                    <h3 className="text-sm font-bold text-white">Course Announcements & Live Doubt Links</h3>
+                    <h3 className="text-sm font-bold text-white">Course Announcements & Live Masterclass Notices</h3>
                     {course.announcements?.length > 0 ? (
                       course.announcements.map((ann, i) => (
-                        <div key={i} className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-1.5">
+                        <div key={i} className="p-4 rounded-xl bg-[#101A2C] border border-[#1E293B] space-y-1.5">
                           <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-bold uppercase tracking-wide bg-blue-900/60 text-blue-300 px-2 py-0.5 rounded">
-                              {ann.badge || 'Announcement'}
+                            <span className="text-[10px] font-bold uppercase tracking-wide bg-[#2563EB]/20 text-[#38BDF8] border border-[#2563EB]/40 px-2 py-0.5 rounded">
+                              {ann.badge || 'Academic Notice'}
                             </span>
-                            <span className="text-[10px] text-slate-500 font-mono">
+                            <span className="text-[10px] text-[#64748B] font-mono">
                               {new Date(ann.date).toLocaleDateString()}
                             </span>
                           </div>
-                          <h4 className="font-bold text-slate-200 text-sm">{ann.title}</h4>
-                          <p className="text-slate-400 text-xs leading-relaxed">{ann.content}</p>
+                          <h4 className="font-bold text-white text-sm">{ann.title}</h4>
+                          <p className="text-[#A7B5CC] text-xs leading-relaxed">{ann.content}</p>
                         </div>
                       ))
                     ) : (
-                      <p className="text-slate-500">No announcements posted for this course yet.</p>
+                      <p className="text-[#64748B]">No announcements posted for this course yet.</p>
                     )}
                   </div>
                 )}
@@ -629,30 +631,30 @@ export const LmsClassroomPage = () => {
 
         {/* Right Collapsible Curriculum Sidebar */}
         <aside
-          className={`w-80 md:w-88 bg-slate-950 border-l border-slate-800 flex flex-col transition-all duration-300 z-20 ${
+          className={`w-80 md:w-88 bg-[#0B1220] border-l border-[#1E293B] flex flex-col transition-all duration-300 z-20 ${
             sidebarOpen ? 'translate-x-0' : 'translate-x-full absolute md:relative md:translate-x-0 hidden md:flex'
           }`}
         >
-          <div className="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950">
-            <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400">
-              Course Content
+          <div className="p-4 border-b border-[#1E293B] flex items-center justify-between bg-[#0B1220]">
+            <h3 className="font-bold text-xs uppercase tracking-wider text-[#94A3B8]">
+              Curriculum Modules
             </h3>
-            <span className="text-xs font-mono text-blue-400 font-bold">
+            <span className="text-xs font-mono text-[#38BDF8] font-bold">
               {progress?.completedLectures?.length || 0} / {course.totalLectures} Done
             </span>
           </div>
 
-          <div className="flex-1 overflow-y-auto divide-y divide-slate-800/80">
+          <div className="flex-1 overflow-y-auto divide-y divide-[#1E293B]">
             {course.modules?.map((mod, modIdx) => (
-              <div key={mod._id || modIdx} className="bg-slate-950">
-                <div className="p-3.5 bg-slate-900/60 font-bold text-xs text-slate-300 flex items-center justify-between">
+              <div key={mod._id || modIdx} className="bg-[#0B1220]">
+                <div className="p-3.5 bg-[#101A2C]/80 font-bold text-xs text-[#F8FAFC] flex items-center justify-between border-b border-[#1E293B]/60">
                   <span className="truncate max-w-[210px]">{mod.title}</span>
-                  <span className="text-[10px] font-mono text-slate-500">
+                  <span className="text-[10px] font-mono text-[#38BDF8] bg-[#070B14] px-1.5 py-0.5 rounded border border-[#1E293B]">
                     {mod.lectures?.length} Lec
                   </span>
                 </div>
 
-                <div className="divide-y divide-slate-900/40">
+                <div className="divide-y divide-[#1E293B]/40">
                   {mod.lectures?.map((lec) => {
                     const isCompleted = progress?.completedLectures?.some(
                       (id) => id === lec._id || id.toString() === lec._id?.toString()
@@ -663,10 +665,10 @@ export const LmsClassroomPage = () => {
                       <button
                         key={lec._id}
                         onClick={() => handleSelectLecture(lec)}
-                        className={`w-full p-3 text-left flex items-start gap-3 transition ${
+                        className={`w-full p-3.5 text-left flex items-start gap-3 transition ${
                           isActive
-                            ? 'bg-blue-600/20 border-l-4 border-blue-500 text-white'
-                            : 'hover:bg-slate-900/50 text-slate-400'
+                            ? 'bg-[#2563EB]/20 border-l-4 border-[#38BDF8] text-white'
+                            : 'hover:bg-[#101A2C] text-[#94A3B8]'
                         }`}
                       >
                         <div className="mt-0.5 shrink-0">
@@ -685,13 +687,13 @@ export const LmsClassroomPage = () => {
                           >
                             {lec.title}
                           </p>
-                          <div className="flex items-center gap-2 mt-1 text-[10px] text-slate-500">
-                            <span className="flex items-center gap-0.5">
-                              <Clock className="w-3 h-3" />
+                          <div className="flex items-center gap-2 mt-1 text-[10px] text-[#64748B]">
+                            <span className="flex items-center gap-0.5 font-mono">
+                              <Clock className="w-3 h-3 text-[#38BDF8]" />
                               {lec.duration}
                             </span>
                             {lec.isFreePreview && (
-                              <span className="text-blue-400 font-semibold">• Preview</span>
+                              <span className="text-[#38BDF8] font-semibold bg-[#2563EB]/20 px-1 rounded">• Preview</span>
                             )}
                           </div>
                         </div>

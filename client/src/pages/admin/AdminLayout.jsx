@@ -30,37 +30,36 @@ export const AdminLayout = () => {
 
   const navItems = [
     { label: 'Overview', to: '/admin', icon: LayoutDashboard, end: true },
-    { label: 'Courses', to: '/admin/courses', icon: BookOpen },
-    { label: 'Website CMS', to: '/admin/cms', icon: SlidersHorizontal },
+    { label: 'Courses Management', to: '/admin/courses', icon: BookOpen },
+    { label: 'Website CMS & Settings', to: '/admin/cms', icon: SlidersHorizontal },
     { label: 'Media Library', to: '/admin/media', icon: FolderArchive },
     { label: 'Students Directory', to: '/admin/students', icon: Users },
-    { label: 'Grading Portal', to: '/admin/assignments', icon: Award }
+    { label: 'Grading & Problem Sets', to: '/admin/assignments', icon: Award }
   ];
 
-  // Helper to determine current section name for breadcrumbs
   const getCurrentSectionTitle = () => {
     const item = navItems.find((n) =>
       n.end ? location.pathname === n.to : location.pathname.startsWith(n.to)
     );
-    if (location.pathname.includes('/content')) return 'Course Content';
-    return item ? item.label : 'Dashboard';
+    if (location.pathname.includes('/content')) return 'Course Content & Syllabus';
+    return item ? item.label : 'Admin Portal';
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col md:flex-row font-sans">
+    <div className="min-h-screen bg-[#070B14] text-[#F8FAFC] flex flex-col md:flex-row font-sans">
       {/* Mobile Top Bar */}
-      <header className="md:hidden bg-slate-950 text-white px-4 py-3 flex items-center justify-between border-b border-slate-800 z-30">
+      <header className="md:hidden bg-[#0B1220] text-white px-4 py-3 flex items-center justify-between border-b border-[#3B82F6]/20 z-30">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded bg-slate-800 border border-slate-700 flex items-center justify-center text-white">
-            <GraduationCap className="w-4 h-4 text-slate-200" />
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#2563EB] to-[#3B82F6] flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+            <GraduationCap className="w-4 h-4 text-white" />
           </div>
-          <span className="font-bold text-sm tracking-tight text-white">
-            Maths <span className="text-slate-400 font-normal text-xs">Admin</span>
+          <span className="font-bold text-sm tracking-tight text-[#F8FAFC]">
+            Mathematics Academy <span className="text-[#60A5FA] font-light text-xs">Admin</span>
           </span>
         </div>
         <button
           onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
-          className="p-1.5 rounded text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
+          className="p-1.5 rounded-lg text-[#A7B5CC] hover:text-white hover:bg-[#14213A] cursor-pointer"
         >
           {mobileSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
@@ -68,33 +67,31 @@ export const AdminLayout = () => {
 
       {/* Sidebar Navigation */}
       <aside
-        className={`w-64 bg-slate-950 text-slate-300 flex flex-col shrink-0 border-r border-slate-800/80 transition-all duration-200 z-40 fixed inset-y-0 left-0 md:static ${
+        className={`w-64 bg-[#0B1220] text-[#A7B5CC] flex flex-col shrink-0 border-r border-[#3B82F6]/20 transition-all duration-200 z-40 fixed inset-y-0 left-0 md:static ${
           mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
         {/* Brand Header */}
-        <div className="p-5 border-b border-slate-800/80">
-          <Link to="/admin" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-white shrink-0">
-              <GraduationCap className="w-5 h-5 text-slate-200" />
+        <div className="p-5 border-b border-[#3B82F6]/15">
+          <Link to="/admin" className="flex items-center gap-3 group">
+            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#2563EB] to-[#3B82F6] flex items-center justify-center text-white shrink-0 shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
+              <GraduationCap className="w-5 h-5 text-white" />
             </div>
             <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-bold text-sm tracking-tight text-white">
-                  Mathematics Academy
-                </span>
-              </div>
-              <p className="text-[10px] text-slate-400 font-medium tracking-wider uppercase mt-0.5">
-                Administration Console
+              <span className="font-bold text-sm tracking-tight text-[#F8FAFC]">
+                Mathematics Academy
+              </span>
+              <p className="text-[10px] text-[#60A5FA] font-semibold tracking-wider uppercase mt-0.5">
+                Admin Console
               </p>
             </div>
           </Link>
         </div>
 
         {/* Navigation Items */}
-        <div className="flex-1 py-5 px-3 space-y-1 overflow-y-auto">
-          <p className="px-3 text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
-            Operations & Content
+        <div className="flex-1 py-5 px-3 space-y-1.5 overflow-y-auto">
+          <p className="px-3 text-[10px] font-bold text-[#A7B5CC]/70 uppercase tracking-wider mb-2">
+            Academy Operations
           </p>
 
           {navItems.map((item) => {
@@ -106,15 +103,15 @@ export const AdminLayout = () => {
                 end={item.end}
                 onClick={() => setMobileSidebarOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition ${
+                  `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                     isActive
-                      ? 'bg-slate-800 text-white font-semibold border-l-2 border-blue-500 pl-2.5'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+                      ? 'bg-[#14213A] text-white border-l-3 border-[#3B82F6] shadow-md shadow-blue-500/10'
+                      : 'text-[#A7B5CC] hover:text-white hover:bg-[#101A2C]'
                   }`
                 }
               >
-                <div className="flex items-center gap-2.5">
-                  <Icon className="w-4 h-4 shrink-0 text-slate-400" />
+                <div className="flex items-center gap-3">
+                  <Icon className="w-4 h-4 shrink-0 text-[#3B82F6]" />
                   <span>{item.label}</span>
                 </div>
               </NavLink>
@@ -123,29 +120,29 @@ export const AdminLayout = () => {
         </div>
 
         {/* Sidebar Footer */}
-        <div className="p-3 border-t border-slate-800/80 space-y-2">
+        <div className="p-3.5 border-t border-[#3B82F6]/15 space-y-2">
           <Link
             to="/"
             target="_blank"
-            className="flex items-center justify-between px-3 py-2 rounded-lg text-xs text-slate-400 hover:text-slate-200 hover:bg-slate-900 transition"
+            className="flex items-center justify-between px-3 py-2 rounded-xl text-xs text-[#A7B5CC] hover:text-white hover:bg-[#14213A] transition"
           >
             <div className="flex items-center gap-2">
-              <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+              <ExternalLink className="w-3.5 h-3.5 text-[#3B82F6]" />
               <span>Public Website</span>
             </div>
-            <span className="text-[10px] text-slate-400 font-mono">Live ↗</span>
+            <span className="text-[10px] text-[#60A5FA] font-mono">Live ↗</span>
           </Link>
 
-          <div className="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 flex items-center justify-between">
-            <div className="min-w-0 flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-slate-800 text-slate-300 font-semibold text-[10px] flex items-center justify-center shrink-0">
+          <div className="p-2.5 rounded-xl bg-[#101A2C] border border-[#3B82F6]/25 flex items-center justify-between">
+            <div className="min-w-0 flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#2563EB] to-[#3B82F6] text-white font-bold text-[11px] flex items-center justify-center shrink-0">
                 A
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-semibold text-slate-200 truncate">{user?.name || 'Administrator'}</p>
+                <p className="text-xs font-semibold text-[#F8FAFC] truncate">{user?.name || 'Administrator'}</p>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                  <span className="text-[10px] text-slate-400 font-mono">Admin Session</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <span className="text-[10px] text-[#60A5FA] font-mono">Faculty Access</span>
                 </div>
               </div>
             </div>
@@ -153,7 +150,7 @@ export const AdminLayout = () => {
             <button
               onClick={handleLogout}
               title="Sign Out"
-              className="p-1.5 rounded text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition cursor-pointer"
+              className="p-1.5 rounded-lg text-[#A7B5CC] hover:text-rose-400 hover:bg-[#14213A] transition cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
             </button>
@@ -162,27 +159,28 @@ export const AdminLayout = () => {
       </aside>
 
       {/* Main Administrative Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto bg-[#070B14]">
         {/* Top Header Bar */}
-        <header className="bg-white border-b border-slate-200 px-6 py-3.5 hidden md:flex items-center justify-between sticky top-0 z-20">
-          <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+        <header className="bg-[#0B1220]/95 backdrop-blur-md border-b border-[#3B82F6]/20 px-6 py-3.5 hidden md:flex items-center justify-between sticky top-0 z-20">
+          <div className="flex items-center gap-2 text-xs text-[#A7B5CC] font-medium">
             <span>Administration</span>
-            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-            <span className="text-slate-900 font-semibold">{getCurrentSectionTitle()}</span>
+            <ChevronRight className="w-3.5 h-3.5 text-[#3B82F6]" />
+            <span className="text-[#F8FAFC] font-bold">{getCurrentSectionTitle()}</span>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-100 text-slate-700 text-[11px] font-medium border border-slate-200">
-              <Shield className="w-3 h-3 text-slate-500" />
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#14213A] text-[#60A5FA] text-[11px] font-semibold border border-[#3B82F6]/30">
+              <Shield className="w-3 h-3 text-[#3B82F6]" />
               <span>Full Control Access</span>
             </span>
 
             <Link
               to="/"
-              className="text-xs text-slate-600 hover:text-slate-900 font-medium flex items-center gap-1 px-2.5 py-1 rounded hover:bg-slate-50 transition"
+              target="_blank"
+              className="text-xs text-[#A7B5CC] hover:text-white font-medium flex items-center gap-1 px-3 py-1 rounded-lg hover:bg-[#14213A] transition"
             >
               <span>View Portal</span>
-              <ExternalLink className="w-3 h-3 text-slate-400" />
+              <ExternalLink className="w-3 h-3 text-[#3B82F6]" />
             </Link>
           </div>
         </header>

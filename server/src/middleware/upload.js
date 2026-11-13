@@ -1,32 +1,29 @@
 import multer from 'multer';
 import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
+import { storageService } from '../services/storageService.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const uploadDir = path.join(__dirname, '../../uploads');
-
-// Ensure upload directory exists
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+// Storage engine – choose based on STORAGE_DRIVER
+let storage;
+if (process.env.STORAGE_DRIVER === 'r2') {
+  // Use memory storage; actual upload happens in controller via storageService.uploadFile
+  storage = multer.memoryStorage();
+} else {
+  // Local disk storage (default)
+  storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, storageService.getUploadDir());
+    },
+    filename: (req, file, cb) => {
+      const ext = path.extname(file.originalname);
+      const baseName = path
+        .basename(file.originalname, ext)
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '-');
+      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e5)}`;
+      cb(null, `${baseName}-${uniqueSuffix}${ext}`);
+    }
+  });
 }
-
-// Storage engine
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const baseName = path
-      .basename(file.originalname, ext)
-      .toLowerCase()
-      .replace(/[^a-z0-9]/g, '-');
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e5)}`;
-    cb(null, `${baseName}-${uniqueSuffix}${ext}`);
-  }
-});
 
 // Allowed MIME types
 const allowedMimes = [

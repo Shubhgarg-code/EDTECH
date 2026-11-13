@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CourseCard } from '../components/CourseCard';
 import { CheckoutModal } from '../components/CheckoutModal';
 import { api } from '../api/apiClient';
-import { Search, Filter, BookOpen, Sparkles } from 'lucide-react';
+import { Search, Filter, BookOpen, Sparkles, Layers } from 'lucide-react';
 
 export const CoursesCataloguePage = () => {
   const [courses, setCourses] = useState([]);
@@ -25,7 +25,15 @@ export const CoursesCataloguePage = () => {
 
         const data = await api.get(`/courses?${queryParams.toString()}`);
         if (data.success) {
-          setCourses(data.courses);
+          // De-duplicate courses to guarantee unique cards
+          const rawCourses = data.courses || [];
+          const uniqueMap = new Map();
+          rawCourses.forEach((c) => {
+            if (c && c._id && !uniqueMap.has(c._id)) {
+              uniqueMap.set(c._id, c);
+            }
+          });
+          setCourses(Array.from(uniqueMap.values()));
         }
       } catch (err) {
         console.error('Error fetching courses:', err);
@@ -41,33 +49,33 @@ export const CoursesCataloguePage = () => {
   const levels = ['All', 'Beginner', 'Intermediate', 'Advanced', 'All Levels'];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10 bg-[#070B14] text-[#F8FAFC]">
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold tracking-wide uppercase">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Available Courses</span>
+        <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#101A2C] border border-[#3B82F6]/30 text-[#60A5FA] text-xs font-bold tracking-wide uppercase">
+          <Sparkles className="w-3.5 h-3.5 text-[#3B82F6]" />
+          <span>Curriculum Catalogue</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-          Explore All Courses
+        <h1 className="text-3xl sm:text-5xl font-black text-[#F8FAFC] tracking-tight">
+          Explore Mathematics Courses
         </h1>
-        <p className="text-sm text-slate-500">
-          Structured courses for every level. Filter by subject, level, or sort by preference.
+        <p className="text-sm text-[#A7B5CC] leading-relaxed">
+          Concept-first courses spanning Foundation, Class 11, Class 12, Calculus, and Olympiad problem-solving.
         </p>
       </div>
 
       {/* Filters & Search Control Bar */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-sm space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+      <div className="bg-[#101A2C] rounded-2xl border border-[#3B82F6]/25 p-5 shadow-xl space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5 items-center">
           {/* Search Input */}
           <div className="sm:col-span-6 relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+            <Search className="w-4 h-4 text-[#3B82F6] absolute left-3.5 top-3.5" />
             <input
               type="text"
-              placeholder="Search by topic (e.g. Calculus, Trigonometry, Algebra)..."
+              placeholder="Search by topic (e.g. Calculus, Trigonometry, Sets, Algebra)..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl bg-[#070B14] border border-[#3B82F6]/30 text-[#F8FAFC] placeholder-[#A7B5CC]/50 focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition"
             />
           </div>
 
@@ -76,10 +84,10 @@ export const CoursesCataloguePage = () => {
             <select
               value={level}
               onChange={(e) => setLevel(e.target.value)}
-              className="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-700 font-medium"
+              className="w-full px-3 py-2.5 text-xs rounded-xl bg-[#070B14] border border-[#3B82F6]/30 text-[#F8FAFC] font-medium focus:outline-none focus:ring-2 focus:ring-[#3B82F6]"
             >
               {levels.map((lvl) => (
-                <option key={lvl} value={lvl}>
+                <option key={lvl} value={lvl} className="bg-[#101A2C] text-[#F8FAFC]">
                   Level: {lvl}
                 </option>
               ))}
@@ -91,26 +99,26 @@ export const CoursesCataloguePage = () => {
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value)}
-              className="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-700 font-medium"
+              className="w-full px-3 py-2.5 text-xs rounded-xl bg-[#070B14] border border-[#3B82F6]/30 text-[#F8FAFC] font-medium focus:outline-none focus:ring-2 focus:ring-[#3B82F6]"
             >
-              <option value="popular">Most Popular</option>
-              <option value="rating">Highest Rated</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
+              <option value="popular" className="bg-[#101A2C] text-[#F8FAFC]">Most Popular</option>
+              <option value="rating" className="bg-[#101A2C] text-[#F8FAFC]">Highest Rated</option>
+              <option value="price-low" className="bg-[#101A2C] text-[#F8FAFC]">Price: Low to High</option>
+              <option value="price-high" className="bg-[#101A2C] text-[#F8FAFC]">Price: High to Low</option>
             </select>
           </div>
         </div>
 
         {/* Category Pills */}
-        <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
+        <div className="flex flex-wrap gap-2 pt-3 border-t border-[#3B82F6]/15">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setCategory(cat)}
-              className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition ${
+              className={`text-xs font-semibold px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
                 category === cat
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+                  ? 'bg-gradient-to-r from-[#2563EB] to-[#3B82F6] text-white shadow-md shadow-blue-500/20'
+                  : 'bg-[#14213A] text-[#A7B5CC] hover:text-white border border-[#3B82F6]/20 hover:border-[#60A5FA]/40'
               }`}
             >
               {cat}
@@ -122,15 +130,17 @@ export const CoursesCataloguePage = () => {
       {/* Courses List */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-96 rounded-2xl bg-slate-200 animate-pulse" />
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-96 rounded-2xl bg-[#101A2C] border border-[#3B82F6]/20 animate-pulse" />
           ))}
         </div>
       ) : courses.length === 0 ? (
-        <div className="text-center py-20 bg-white rounded-2xl border border-slate-200 space-y-3">
-          <BookOpen className="w-12 h-12 text-slate-300 mx-auto" />
-          <h3 className="text-base font-bold text-slate-700">No matching courses found</h3>
-          <p className="text-xs text-slate-400">Try modifying your search or clearing category filters.</p>
+        <div className="text-center py-20 bg-[#101A2C] rounded-2xl border border-[#3B82F6]/20 space-y-4 p-8">
+          <BookOpen className="w-14 h-14 text-[#3B82F6]/40 mx-auto" />
+          <h3 className="text-lg font-bold text-[#F8FAFC]">No matching mathematics courses found</h3>
+          <p className="text-xs text-[#A7B5CC] max-w-sm mx-auto">
+            Try adjusting your topic search, changing the level filter, or clearing selected categories.
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -153,4 +163,3 @@ export const CoursesCataloguePage = () => {
     </div>
   );
 };
-

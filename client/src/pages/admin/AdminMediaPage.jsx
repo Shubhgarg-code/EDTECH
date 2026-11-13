@@ -108,15 +108,15 @@ export const AdminMediaPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">Media Library</h1>
-          <p className="text-xs text-slate-500">
+          <h1 className="text-2xl font-black text-[#F8FAFC] tracking-tight">Media Library</h1>
+          <p className="text-xs text-[#64748B]">
             Upload, manage, and retrieve URLs for images, PDF notes, and lecture video assets.
           </p>
         </div>
 
         {/* Upload Button */}
         <div>
-          <label className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-2 cursor-pointer transition active:scale-95">
+          <label className="px-4 py-2.5 bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-2 cursor-pointer transition active:scale-95">
             {isUploading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -139,7 +139,7 @@ export const AdminMediaPage = () => {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="bg-[#101A2C] p-4 rounded-2xl border border-[#1E293B] shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
         {/* Category Pills */}
         <div className="flex flex-wrap gap-1.5 w-full sm:w-auto">
           {categories.map((c) => (
@@ -148,8 +148,8 @@ export const AdminMediaPage = () => {
               onClick={() => setCategoryFilter(c.id)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
                 categoryFilter === c.id
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] text-white shadow-sm'
+                  : 'bg-[#070B14] text-[#94A3B8] hover:bg-slate-200'
               }`}
             >
               {c.label}
@@ -165,7 +165,7 @@ export const AdminMediaPage = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search files..."
-            className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-[#1E293B] focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
       </div>
@@ -176,10 +176,10 @@ export const AdminMediaPage = () => {
           <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
         </div>
       ) : mediaList.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-3">
+        <div className="bg-[#101A2C] rounded-2xl border border-[#1E293B] p-12 text-center space-y-3">
           <FolderOpen className="w-12 h-12 text-slate-300 mx-auto" />
-          <h3 className="font-bold text-slate-800 text-sm">No files uploaded yet</h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
+          <h3 className="font-bold text-[#F8FAFC] text-sm">No files uploaded yet</h3>
+          <p className="text-xs text-[#64748B] max-w-sm mx-auto">
             Upload images for course thumbnails, PDFs for lecture notes, or MP4 videos for classroom streams.
           </p>
         </div>
@@ -193,10 +193,10 @@ export const AdminMediaPage = () => {
             return (
               <div
                 key={file._id}
-                className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between group"
+                className="bg-[#101A2C] rounded-2xl border border-[#1E293B] overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between group"
               >
                 {/* Preview Thumbnail */}
-                <div className="aspect-video bg-slate-100 relative overflow-hidden flex items-center justify-center">
+                <div className="aspect-video bg-[#070B14] relative overflow-hidden flex items-center justify-center">
                   {isImg ? (
                     <img
                       src={file.url}
@@ -224,7 +224,7 @@ export const AdminMediaPage = () => {
                 <div className="p-3.5 space-y-2">
                   <div>
                     <h4
-                      className="font-bold text-slate-900 text-xs truncate"
+                      className="font-bold text-[#F8FAFC] text-xs truncate"
                       title={file.originalName}
                     >
                       {file.originalName}
@@ -259,7 +259,7 @@ export const AdminMediaPage = () => {
                         href={file.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-1 text-slate-400 hover:text-slate-700 rounded"
+                        className="p-1 text-slate-400 hover:text-[#94A3B8] rounded"
                         title="View file in new tab"
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
@@ -282,3 +282,4 @@ export const AdminMediaPage = () => {
     </div>
   );
 };
+

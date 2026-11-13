@@ -1,12 +1,6 @@
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
 import { Media } from '../models/Media.js';
 import { getCategoryFromMime } from '../middleware/upload.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const uploadDir = path.join(__dirname, '../../uploads');
+import { storageService } from '../services/storageService.js';
 
 export const uploadMediaFile = async (req, res, next) => {
   try {
@@ -14,24 +8,42 @@ export const uploadMediaFile = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'No file provided for upload.' });
     }
 
-    const { filename, originalname, mimetype, size } = req.file;
+    const { originalname, mimetype, size } = req.file;
     const category = getCategoryFromMime(mimetype);
-    const fileUrl = `/uploads/${filename}`;
+    // Upload to storage (R2 or local) and obtain stored name/key
+    const storedName = await storageService.uploadFile(req.file);
+    // Generate fresh URL for response (do NOT persist signed URL in DB)
+    const freshUrl = await storageService.getFileUrl(storedName);
 
-    const media = await Media.create({
-      filename,
-      originalName: originalname,
-      mimeType: mimetype,
-      size,
-      url: fileUrl,
-      category,
-      uploadedBy: req.user ? req.user._id : null
-    });
+    let media;
+    try {
+      media = await Media.create({
+        filename: storedName,
+        originalName: originalname,
+        mimeType: mimetype,
+        size,
+        url: '', // Do not persist signed URLs; dynamically generated on retrieval
+        category,
+        uploadedBy: req.user ? req.user._id : null
+      });
+    } catch (e) {
+      // Cleanup uploaded file if DB record creation fails
+      try {
+        await storageService.deleteFile(storedName);
+      } catch (delErr) {
+        console.warn('Upload rollback failed:', delErr.message);
+      }
+      throw e; // propagate to error handler
+    }
+
+    // Attach fresh URL for client response
+    const responseMedia = media.toObject();
+    responseMedia.url = freshUrl;
 
     res.status(201).json({
       success: true,
       message: 'File uploaded successfully',
-      media
+      media: responseMedia
     });
   } catch (error) {
     next(error);
@@ -55,10 +67,25 @@ export const getAllMedia = async (req, res, next) => {
     }
 
     const total = await Media.countDocuments(query);
-    const media = await Media.find(query)
+    const mediaDocs = await Media.find(query)
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(Number(limit));
+
+    // Generate fresh URLs for each record (R2 signed or local path) without persisting
+    const media = await Promise.all(
+      mediaDocs.map(async (doc) => {
+        const obj = doc.toObject();
+        try {
+          const freshUrl = await storageService.getFileUrl(doc.filename);
+          obj.url = freshUrl;
+        } catch (e) {
+          console.warn('Failed to generate URL for', doc.filename, e.message);
+          obj.url = '';
+        }
+        return obj;
+      })
+    );
 
     res.status(200).json({
       success: true,
@@ -80,16 +107,16 @@ export const deleteMedia = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Media file not found.' });
     }
 
-    // Remove file from disk
-    const filePath = path.join(uploadDir, media.filename);
-    if (fs.existsSync(filePath)) {
-      try {
-        await fs.promises.unlink(filePath);
-      } catch (err) {
-        console.warn('Could not delete physical file from disk:', err.message);
-      }
+    // Attempt storage deletion
+    const deleted = await storageService.deleteFile(media.filename);
+    if (!deleted) {
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to delete physical media file from storage. Database record preserved.'
+      });
     }
 
+    // Delete database record only after storage deletion succeeds
     await Media.findByIdAndDelete(id);
 
     res.status(200).json({

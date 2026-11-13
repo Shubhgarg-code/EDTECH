@@ -73,8 +73,8 @@ export const AdminAssignmentsPage = () => {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-black text-slate-900 tracking-tight">Assignment Submissions</h1>
-        <p className="text-xs text-slate-500">
+        <h1 className="text-2xl font-black text-[#F8FAFC] tracking-tight">Assignment Submissions</h1>
+        <p className="text-xs text-[#64748B]">
           Review student code repositories, live demo deployments, and submit grades with mentor feedback.
         </p>
       </div>
@@ -85,10 +85,10 @@ export const AdminAssignmentsPage = () => {
           <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
         </div>
       ) : submissions.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-3">
+        <div className="bg-[#101A2C] rounded-2xl border border-[#1E293B] p-12 text-center space-y-3">
           <Award className="w-12 h-12 text-slate-300 mx-auto" />
-          <h3 className="font-bold text-slate-800 text-sm">No assignment submissions yet</h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
+          <h3 className="font-bold text-[#F8FAFC] text-sm">No assignment submissions yet</h3>
+          <p className="text-xs text-[#64748B] max-w-sm mx-auto">
             When students submit projects from inside the LMS classroom, their code will appear here for grading.
           </p>
         </div>
@@ -97,7 +97,7 @@ export const AdminAssignmentsPage = () => {
           {submissions.map((sub) => (
             <div
               key={sub._id}
-              className="bg-white rounded-2xl border border-slate-200 p-5 space-y-3 shadow-sm flex flex-col justify-between"
+              className="bg-[#101A2C] rounded-2xl border border-[#1E293B] p-5 space-y-3 shadow-sm flex flex-col justify-between"
             >
               <div className="space-y-2 text-xs">
                 <div className="flex items-start justify-between gap-2">
@@ -105,9 +105,9 @@ export const AdminAssignmentsPage = () => {
                     <span className="text-[10px] font-bold text-blue-600 uppercase">
                       {sub.course?.title || 'Course'}
                     </span>
-                    <h3 className="font-bold text-slate-900 text-sm leading-snug">{sub.title}</h3>
-                    <p className="text-slate-500 text-[11px] mt-0.5">
-                      Student: <span className="font-semibold text-slate-800">{sub.user?.name}</span> ({sub.user?.email})
+                    <h3 className="font-bold text-[#F8FAFC] text-sm leading-snug">{sub.title}</h3>
+                    <p className="text-[#64748B] text-[11px] mt-0.5">
+                      Student: <span className="font-semibold text-[#F8FAFC]">{sub.user?.name}</span> ({sub.user?.email})
                     </p>
                   </div>
 
@@ -149,7 +149,7 @@ export const AdminAssignmentsPage = () => {
                 </div>
 
                 {sub.submissionNotes && (
-                  <p className="p-3 bg-slate-50 rounded-xl text-slate-700 leading-relaxed border border-slate-100 italic text-[11px]">
+                  <p className="p-3 bg-[#0B1220] rounded-xl text-[#94A3B8] leading-relaxed border border-slate-100 italic text-[11px]">
                     "{sub.submissionNotes}"
                   </p>
                 )}
@@ -157,7 +157,7 @@ export const AdminAssignmentsPage = () => {
                 {sub.feedback && (
                   <div className="p-3 bg-blue-50/60 rounded-xl border border-blue-100 text-[11px] space-y-0.5">
                     <p className="text-blue-900 font-bold">Feedback ({sub.reviewedBy}):</p>
-                    <p className="text-slate-700">{sub.feedback}</p>
+                    <p className="text-[#94A3B8]">{sub.feedback}</p>
                   </div>
                 )}
               </div>
@@ -181,22 +181,22 @@ export const AdminAssignmentsPage = () => {
       {/* GRADE MODAL */}
       {selectedSub && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4 text-xs">
+          <div className="bg-[#101A2C] rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4 text-xs">
             <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-              <h3 className="font-bold text-slate-900 text-sm">Grade Submission</h3>
+              <h3 className="font-bold text-[#F8FAFC] text-sm">Grade Submission</h3>
               <button
                 onClick={() => setSelectedSub(null)}
-                className="p-1 rounded-full text-slate-400 hover:text-slate-700"
+                className="p-1 rounded-full text-slate-400 hover:text-[#94A3B8]"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <p className="font-semibold text-slate-800">{selectedSub.title}</p>
+            <p className="font-semibold text-[#F8FAFC]">{selectedSub.title}</p>
 
             <form onSubmit={handleSaveGrade} className="space-y-3">
               <div>
-                <label className="block text-slate-700 font-bold mb-1">Score (0 - 100) *</label>
+                <label className="block text-[#94A3B8] font-bold mb-1">Score (0 - 100) *</label>
                 <input
                   type="number"
                   min="0"
@@ -209,7 +209,7 @@ export const AdminAssignmentsPage = () => {
               </div>
 
               <div>
-                <label className="block text-slate-700 font-bold mb-1">Mentor Feedback *</label>
+                <label className="block text-[#94A3B8] font-bold mb-1">Mentor Feedback *</label>
                 <textarea
                   value={gradeFeedback}
                   onChange={(e) => setGradeFeedback(e.target.value)}
@@ -224,7 +224,7 @@ export const AdminAssignmentsPage = () => {
                 <button
                   type="button"
                   onClick={() => setSelectedSub(null)}
-                  className="px-3.5 py-1.5 border rounded-xl text-slate-700"
+                  className="px-3.5 py-1.5 border rounded-xl text-[#94A3B8]"
                 >
                   Cancel
                 </button>
@@ -243,3 +243,4 @@ export const AdminAssignmentsPage = () => {
     </div>
   );
 };
+

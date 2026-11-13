@@ -87,8 +87,8 @@ export const AdminStudentsPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">Student Management</h1>
-          <p className="text-xs text-slate-500">
+          <h1 className="text-2xl font-black text-[#F8FAFC] tracking-tight">Student Management</h1>
+          <p className="text-xs text-[#64748B]">
             Real registered student accounts, actual learning progress, and manual course enrollment control.
           </p>
         </div>
@@ -101,7 +101,7 @@ export const AdminStudentsPage = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by student name or email..."
-            className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+            className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-[#1E293B] focus:outline-none focus:ring-1 focus:ring-blue-500 bg-[#101A2C]"
           />
         </div>
       </div>
@@ -112,18 +112,18 @@ export const AdminStudentsPage = () => {
           <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
         </div>
       ) : students.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-3">
+        <div className="bg-[#101A2C] rounded-2xl border border-[#1E293B] p-12 text-center space-y-3">
           <Users className="w-12 h-12 text-slate-300 mx-auto" />
-          <h3 className="font-bold text-slate-800 text-sm">No registered students found</h3>
-          <p className="text-xs text-slate-500">
+          <h3 className="font-bold text-[#F8FAFC] text-sm">No registered students found</h3>
+          <p className="text-xs text-[#64748B]">
             Students who register on the public portal will appear here automatically.
           </p>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+        <div className="bg-[#101A2C] rounded-2xl border border-[#1E293B] overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-bold">
+              <thead className="bg-[#0B1220] border-b border-[#1E293B] text-[#64748B] uppercase tracking-wider font-bold">
                 <tr>
                   <th className="p-4">Student</th>
                   <th className="p-4">Email</th>
@@ -133,31 +133,31 @@ export const AdminStudentsPage = () => {
                   <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-700">
+              <tbody className="divide-y divide-slate-100 text-[#94A3B8]">
                 {students.map((std) => (
-                  <tr key={std._id} className="hover:bg-slate-50/70 transition">
+                  <tr key={std._id} className="hover:bg-[#0B1220]/70 transition">
                     <td className="p-4">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center shrink-0">
                           {std.name.charAt(0)}
                         </div>
-                        <span className="font-bold text-slate-900">{std.name}</span>
+                        <span className="font-bold text-[#F8FAFC]">{std.name}</span>
                       </div>
                     </td>
-                    <td className="p-4 font-mono text-slate-600">{std.email}</td>
-                    <td className="p-4 text-slate-500">{std.phone || '—'}</td>
+                    <td className="p-4 font-mono text-[#94A3B8]">{std.email}</td>
+                    <td className="p-4 text-[#64748B]">{std.phone || '—'}</td>
                     <td className="p-4">
                       <span className="bg-blue-50 text-blue-700 font-semibold px-2.5 py-0.5 rounded-full text-[10px]">
                         {std.enrolledCourses?.length || 0} Courses
                       </span>
                     </td>
-                    <td className="p-4 text-slate-500">
+                    <td className="p-4 text-[#64748B]">
                       {new Date(std.createdAt).toLocaleDateString()}
                     </td>
                     <td className="p-4 text-right">
                       <button
                         onClick={() => handleOpenStudentModal(std)}
-                        className="px-3 py-1.5 bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-slate-700 rounded-lg text-xs font-semibold transition"
+                        className="px-3 py-1.5 bg-[#070B14] hover:bg-blue-50 hover:text-blue-600 text-[#94A3B8] rounded-lg text-xs font-semibold transition"
                       >
                         Inspect Progress
                       </button>
@@ -173,15 +173,15 @@ export const AdminStudentsPage = () => {
       {/* STUDENT DETAILS & ENROLLMENT MODAL */}
       {selectedStudent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-7 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto space-y-6">
+          <div className="bg-[#101A2C] rounded-3xl max-w-2xl w-full p-6 sm:p-7 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto space-y-6">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
-                <h3 className="font-extrabold text-slate-900 text-base">{selectedStudent.name}</h3>
-                <p className="text-xs text-slate-500">{selectedStudent.email}</p>
+                <h3 className="font-extrabold text-[#F8FAFC] text-base">{selectedStudent.name}</h3>
+                <p className="text-xs text-[#64748B]">{selectedStudent.email}</p>
               </div>
               <button
                 onClick={() => setSelectedStudent(null)}
-                className="p-1 rounded-full text-slate-400 hover:text-slate-700"
+                className="p-1 rounded-full text-slate-400 hover:text-[#94A3B8]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -193,7 +193,7 @@ export const AdminStudentsPage = () => {
               <div className="space-y-6 text-xs">
                 {/* Real Learning Progress */}
                 <div className="space-y-3">
-                  <h4 className="font-bold text-slate-800 uppercase tracking-wider text-[11px]">
+                  <h4 className="font-bold text-[#F8FAFC] uppercase tracking-wider text-[11px]">
                     Current Course Progress (Database Records)
                   </h4>
                   {studentDetails?.progress?.length === 0 ? (
@@ -202,10 +202,10 @@ export const AdminStudentsPage = () => {
                     studentDetails?.progress?.map((p) => (
                       <div
                         key={p._id}
-                        className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-2"
+                        className="p-3.5 bg-[#0B1220] rounded-xl border border-[#1E293B] space-y-2"
                       >
                         <div className="flex items-center justify-between font-bold">
-                          <span className="text-slate-900">{p.course?.title || 'Course'}</span>
+                          <span className="text-[#F8FAFC]">{p.course?.title || 'Course'}</span>
                           <span className="text-blue-600">{p.percentage}% Completed</span>
                         </div>
                         <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
@@ -214,7 +214,7 @@ export const AdminStudentsPage = () => {
                             style={{ width: `${p.percentage}%` }}
                           />
                         </div>
-                        <p className="text-[10px] text-slate-500 font-mono">
+                        <p className="text-[10px] text-[#64748B] font-mono">
                           Completed Lectures: {p.completedLectures?.length || 0}
                         </p>
                       </div>
@@ -224,10 +224,10 @@ export const AdminStudentsPage = () => {
 
                 {/* Course Enrollment Controls */}
                 <div className="space-y-3 pt-2 border-t border-slate-100">
-                  <h4 className="font-bold text-slate-800 uppercase tracking-wider text-[11px]">
+                  <h4 className="font-bold text-[#F8FAFC] uppercase tracking-wider text-[11px]">
                     Manual Course Access Controls
                   </h4>
-                  <div className="divide-y divide-slate-100 border border-slate-200 rounded-xl overflow-hidden">
+                  <div className="divide-y divide-slate-100 border border-[#1E293B] rounded-xl overflow-hidden">
                     {courses.map((course) => {
                       const isEnrolled = studentDetails?.student?.enrolledCourses?.some(
                         (ec) => ec.course?._id === course._id || ec.course === course._id
@@ -236,10 +236,10 @@ export const AdminStudentsPage = () => {
                       return (
                         <div
                           key={course._id}
-                          className="p-3 flex items-center justify-between text-xs bg-white hover:bg-slate-50"
+                          className="p-3 flex items-center justify-between text-xs bg-[#101A2C] hover:bg-[#0B1220]"
                         >
                           <div>
-                            <span className="font-bold text-slate-900">{course.title}</span>
+                            <span className="font-bold text-[#F8FAFC]">{course.title}</span>
                             <span className="text-slate-400 text-[11px] block">{course.batchName}</span>
                           </div>
 
@@ -271,3 +271,4 @@ export const AdminStudentsPage = () => {
     </div>
   );
 };
+

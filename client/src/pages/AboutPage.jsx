@@ -6,7 +6,9 @@ import {
   ArrowRight,
   Compass,
   Target,
-  GraduationCap
+  GraduationCap,
+  Sparkles,
+  BookOpen
 } from 'lucide-react';
 
 export const AboutPage = () => {
@@ -31,9 +33,9 @@ export const AboutPage = () => {
 
   if (loading) {
     return (
-      <div className="py-24 text-center">
-        <div className="w-8 h-8 border-3 border-slate-900 border-t-transparent rounded-full animate-spin mx-auto" />
-        <p className="text-xs text-slate-500 mt-3 font-medium">Loading institutional details...</p>
+      <div className="py-32 text-center bg-[#070B14]">
+        <div className="w-10 h-10 border-3 border-[#3B82F6] border-t-transparent rounded-full animate-spin mx-auto" />
+        <p className="text-xs text-[#A7B5CC] mt-4 font-medium">Loading institutional details...</p>
       </div>
     );
   }
@@ -41,70 +43,72 @@ export const AboutPage = () => {
   const { heading, description, mission, vision, features, aboutImage } = aboutData || {};
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-12">
-      {/* Compact Institutional Header */}
-      <header className="border-b border-slate-200 pb-8">
-        <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-          <GraduationCap className="w-4 h-4 text-slate-600" />
-          <span>Our Teaching Philosophy</span>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-12 bg-[#070B14] text-[#F8FAFC]">
+      {/* Header */}
+      <header className="border-b border-[#3B82F6]/20 pb-10">
+        <div className="flex items-center gap-2 text-xs font-bold text-[#60A5FA] uppercase tracking-wider mb-2.5">
+          <GraduationCap className="w-4 h-4 text-[#3B82F6]" />
+          <span>Academic Philosophy & Foundation</span>
         </div>
-        <h1 className="text-2xl sm:text-4xl font-bold text-slate-900 tracking-tight">
+        <h1 className="text-3xl sm:text-5xl font-black text-[#F8FAFC] tracking-tight">
           {heading || 'About Mathematics Academy'}
         </h1>
-        <p className="text-sm sm:text-base text-slate-600 max-w-3xl mt-3 leading-relaxed">
-          {description}
+        <p className="text-sm sm:text-base text-[#A7B5CC] max-w-3xl mt-3.5 leading-relaxed">
+          {description ||
+            'Mathematics Academy was founded to deliver structured, concept-driven mathematics education. We focus on building rock-solid intuition, rigorous theorem proofs, and disciplined problem-solving methodologies.'}
         </p>
       </header>
 
       {/* Mission & Vision Grid */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
         {/* Mission */}
-        <div className="bg-white rounded-xl p-6 sm:p-7 border border-slate-200 shadow-sm space-y-3">
-          <div className="w-9 h-9 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
-            <Compass className="w-4 h-4" />
+        <div className="bg-[#101A2C] rounded-2xl p-7 border border-[#3B82F6]/25 shadow-xl space-y-3.5 hover:border-[#60A5FA]/40 transition">
+          <div className="w-10 h-10 rounded-xl bg-[#14213A] border border-[#3B82F6]/30 text-[#60A5FA] flex items-center justify-center">
+            <Compass className="w-5 h-5 text-[#3B82F6]" />
           </div>
-          <h2 className="text-base font-bold text-slate-900">Our Academic Mission</h2>
-          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{mission}</p>
+          <h2 className="text-lg font-bold text-[#F8FAFC]">Our Academic Mission</h2>
+          <p className="text-xs sm:text-sm text-[#A7B5CC] leading-relaxed">{mission}</p>
         </div>
 
         {/* Vision */}
-        <div className="bg-white rounded-xl p-6 sm:p-7 border border-slate-200 shadow-sm space-y-3">
-          <div className="w-9 h-9 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
-            <Target className="w-4 h-4" />
+        <div className="bg-[#101A2C] rounded-2xl p-7 border border-[#3B82F6]/25 shadow-xl space-y-3.5 hover:border-[#60A5FA]/40 transition">
+          <div className="w-10 h-10 rounded-xl bg-[#14213A] border border-[#3B82F6]/30 text-[#60A5FA] flex items-center justify-center">
+            <Target className="w-5 h-5 text-[#3B82F6]" />
           </div>
-          <h2 className="text-base font-bold text-slate-900">Our Institutional Vision</h2>
-          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{vision}</p>
+          <h2 className="text-lg font-bold text-[#F8FAFC]">Our Institutional Vision</h2>
+          <p className="text-xs sm:text-sm text-[#A7B5CC] leading-relaxed">{vision}</p>
         </div>
       </section>
 
       {/* Pedagogical Tenets & Showcase */}
-      <section className="bg-white rounded-xl border border-slate-200 p-6 sm:p-9 shadow-sm">
+      <section className="bg-[#101A2C] rounded-2xl border border-[#3B82F6]/25 p-7 sm:p-10 shadow-xl">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           {/* Left: Academic Environment Image */}
           <div className="lg:col-span-5">
-            <div className="aspect-4/3 rounded-lg overflow-hidden bg-slate-100 border border-slate-200">
+            <div className="aspect-[4/3] rounded-xl overflow-hidden bg-[#070B14] border border-[#3B82F6]/30">
               <img
                 src={
-                  aboutImage ||
-                  'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop&q=80'
+                  aboutImage && !aboutImage.includes('photo-1522202176988')
+                    ? aboutImage
+                    : 'https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=800&auto=format&fit=crop&q=80'
                 }
-                alt="Learning Environment"
+                alt="Mathematics Academy Research and Classroom"
                 className="w-full h-full object-cover"
               />
             </div>
-            <p className="text-[11px] text-slate-400 mt-2 text-center">
-              Structured lessons & guided problem-solving practice
+            <p className="text-[11px] text-[#A7B5CC] mt-2.5 text-center font-medium">
+              Concept-driven lessons & guided mathematical problem solving
             </p>
           </div>
 
           {/* Right: Core Features */}
           <div className="lg:col-span-7 space-y-6">
             <div>
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-                Our Approach
+              <span className="text-xs font-bold uppercase tracking-wider text-[#60A5FA]">
+                Teaching Standards
               </span>
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight mt-1">
-                How We Teach Mathematics
+              <h2 className="text-2xl font-black text-[#F8FAFC] tracking-tight mt-1">
+                How We Deliver Mathematics
               </h2>
             </div>
 
@@ -112,14 +116,14 @@ export const AboutPage = () => {
               {features?.map((f, i) => (
                 <div
                   key={i}
-                  className="bg-slate-50 rounded-lg p-4 border border-slate-200 flex items-start gap-3.5"
+                  className="bg-[#14213A] rounded-xl p-4 border border-[#3B82F6]/20 flex items-start gap-3.5"
                 >
-                  <div className="w-6 h-6 rounded-md bg-white border border-slate-200 text-slate-700 flex items-center justify-center shrink-0 mt-0.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-slate-800" />
+                  <div className="w-7 h-7 rounded-lg bg-[#101A2C] border border-[#3B82F6]/30 text-[#60A5FA] flex items-center justify-center shrink-0 mt-0.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#3B82F6]" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-900 text-xs sm:text-sm">{f.title}</h3>
-                    <p className="text-xs text-slate-600 leading-relaxed mt-0.5">{f.description}</p>
+                    <h3 className="font-bold text-[#F8FAFC] text-xs sm:text-sm">{f.title}</h3>
+                    <p className="text-xs text-[#A7B5CC] leading-relaxed mt-0.5">{f.description}</p>
                   </div>
                 </div>
               ))}
@@ -128,9 +132,9 @@ export const AboutPage = () => {
             <div className="pt-2">
               <Link
                 to="/courses"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#2563EB] to-[#3B82F6] hover:brightness-110 text-white font-bold text-xs shadow-md shadow-blue-500/25 transition"
               >
-                <span>Explore Courses</span>
+                <span>View Academy Courses</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>

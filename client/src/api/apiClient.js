@@ -1,4 +1,4 @@
-const API_BASE = '/api';
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 export const apiClient = async (endpoint, options = {}) => {
   const token = localStorage.getItem('math_token') || localStorage.getItem('zenith_token');
