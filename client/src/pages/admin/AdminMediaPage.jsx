@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../../api/apiClient';
+import { api, API_BASE } from '../../api/apiClient';
 import { useToast } from '../../context/ToastContext';
 import {
   FolderOpen,
@@ -53,7 +53,7 @@ export const AdminMediaPage = () => {
     setIsUploading(true);
     try {
       const token = localStorage.getItem('math_token') || localStorage.getItem('zenith_token');
-      const res = await fetch('/api/media/upload', {
+      const res = await fetch(`${API_BASE}/media/upload`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`

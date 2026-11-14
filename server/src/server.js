@@ -53,6 +53,11 @@ app.use(cors({
       return callback(null, true);
     }
 
+    // Allow official and preview Vercel deployments (*.vercel.app)
+    if (/^https:\/\/([a-zA-Z0-9_-]+\.)?vercel\.app$/.test(cleanOrigin)) {
+      return callback(null, true);
+    }
+
     // In development mode, allow any localhost port
     if (ENV.NODE_ENV !== 'production' && /^http:\/\/localhost:\d+$/.test(cleanOrigin)) {
       return callback(null, true);

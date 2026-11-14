@@ -1,7 +1,20 @@
-const API_BASE = import.meta.env.VITE_API_URL || '/api';
+// Normalize API base URL: ensure no trailing slash, and ensure it ends with /api
+const getApiBase = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (!envUrl) {
+    return '/api';
+  }
+  const cleanUrl = envUrl.trim().replace(/\/+$/, '');
+  return cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`;
+};
+
+export const API_BASE = getApiBase();
 
 export const apiClient = async (endpoint, options = {}) => {
   const token = localStorage.getItem('math_token') || localStorage.getItem('zenith_token');
+
+  // Ensure endpoint starts with a slash
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
 
   const headers = {
     'Content-Type': 'application/json',
@@ -9,7 +22,7 @@ export const apiClient = async (endpoint, options = {}) => {
     ...options.headers
   };
 
-  const response = await fetch(`${API_BASE}${endpoint}`, {
+  const response = await fetch(`${API_BASE}${cleanEndpoint}`, {
     ...options,
     headers
   });

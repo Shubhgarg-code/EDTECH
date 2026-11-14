@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { api } from '../../api/apiClient';
+import { api, API_BASE } from '../../api/apiClient';
 import { useToast } from '../../context/ToastContext';
 import {
   ChevronLeft,
@@ -184,7 +184,7 @@ export const AdminCourseContentPage = () => {
     setIsUploadingVideo(true);
     try {
       const token = localStorage.getItem('math_token') || localStorage.getItem('zenith_token');
-      const res = await fetch('/api/media/upload', {
+      const res = await fetch(`${API_BASE}/media/upload`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body
@@ -213,7 +213,7 @@ export const AdminCourseContentPage = () => {
     setIsUploadingPdf(true);
     try {
       const token = localStorage.getItem('math_token') || localStorage.getItem('zenith_token');
-      const res = await fetch('/api/media/upload', {
+      const res = await fetch(`${API_BASE}/media/upload`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body
