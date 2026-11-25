@@ -95,10 +95,10 @@ export const CertificateModal = ({ certificate, isOpen, onClose }) => {
               </div>
 
               <div className="text-center space-y-1">
-                <p className="font-serif italic font-bold text-[#F8FAFC] text-sm">Faculty Council</p>
+                <p className="font-serif italic font-bold text-[#F8FAFC] text-sm">Aman Mishra</p>
                 <div className="border-t border-[#3B82F6]/30 pt-1">
-                  <p className="font-semibold text-[#F8FAFC]">Mathematics Faculty</p>
-                  <p className="text-[10px] text-[#A7B5CC]">Lead Instructor</p>
+                  <p className="font-semibold text-[#F8FAFC]">Aman Mishra</p>
+                  <p className="text-[10px] text-[#A7B5CC]">Lead Mathematics Faculty</p>
                 </div>
               </div>
             </div>

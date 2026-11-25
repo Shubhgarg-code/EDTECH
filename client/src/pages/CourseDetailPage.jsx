@@ -121,15 +121,26 @@ export const CourseDetailPage = () => {
 
               {/* Instructor Card */}
               <div className="flex items-center gap-3.5 pt-3">
-                <img
-                  src={course.instructor?.avatar}
-                  alt={course.instructor?.name}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-[#3B82F6]"
-                />
+                {course.instructor?.avatar ? (
+                  <img
+                    src={course.instructor.avatar}
+                    alt={course.instructor?.name || 'Aman Mishra'}
+                    className="w-12 h-12 rounded-full object-cover border-2 border-[#3B82F6]"
+                  />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#2563EB] to-[#3B82F6] flex items-center justify-center font-bold text-white text-base border-2 border-[#60A5FA] shadow-md shadow-blue-500/20 shrink-0">
+                    {(course.instructor?.name || 'Aman Mishra')
+                      .split(' ')
+                      .map((n) => n[0])
+                      .join('')
+                      .toUpperCase()
+                      .slice(0, 2)}
+                  </div>
+                )}
                 <div>
-                  <p className="text-[11px] text-[#A7B5CC]">Curated by</p>
-                  <p className="font-bold text-[#F8FAFC] text-sm">{course.instructor?.name}</p>
-                  <p className="text-[11px] text-[#60A5FA]">{course.instructor?.title}</p>
+                  <p className="text-[11px] text-[#A7B5CC]">Curated & Mentored by</p>
+                  <p className="font-bold text-[#F8FAFC] text-sm">{course.instructor?.name || 'Aman Mishra'}</p>
+                  <p className="text-[11px] text-[#60A5FA] font-medium">{course.instructor?.title || 'IIT Delhi Alumnus | Former Oracle | 5+ Years Experience'}</p>
                 </div>
               </div>
             </div>

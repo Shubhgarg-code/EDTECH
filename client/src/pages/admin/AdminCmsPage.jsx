@@ -554,9 +554,10 @@ export const AdminCmsPage = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-[#94A3B8] font-semibold mb-1">Official Support Email</label>
+              <label className="block text-[#94A3B8] font-semibold mb-1">Academic Enquiries Email</label>
               <input
                 type="email"
+                placeholder="amanmishra7211@gmail.com"
                 value={settings?.contact?.email || ''}
                 onChange={(e) =>
                   setSettings({
@@ -569,9 +570,10 @@ export const AdminCmsPage = () => {
             </div>
 
             <div>
-              <label className="block text-[#94A3B8] font-semibold mb-1">Contact Phone</label>
+              <label className="block text-[#94A3B8] font-semibold mb-1">Student Enquiries Phone</label>
               <input
                 type="text"
+                placeholder="+91 85957 42861"
                 value={settings?.contact?.phone || ''}
                 onChange={(e) =>
                   setSettings({

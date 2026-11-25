@@ -14,7 +14,10 @@ import {
   Brain,
   Compass,
   CheckCircle2,
-  Atom
+  Atom,
+  Award,
+  Briefcase,
+  Clock
 } from 'lucide-react';
 
 export const HomePage = () => {
@@ -339,7 +342,74 @@ export const HomePage = () => {
         </section>
       )}
 
-      {/* 6. About Section Preview */}
+      {/* 6. Educator Profile Showcase */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-[#101A2C] rounded-2xl border border-[#3B82F6]/25 p-7 sm:p-10 shadow-xl">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            {/* Left: Avatar & Initials Badge */}
+            <div className="lg:col-span-4 flex flex-col items-center text-center">
+              <div className="relative mb-4">
+                <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl bg-gradient-to-tr from-[#1E3A8A] via-[#2563EB] to-[#3B82F6] flex items-center justify-center font-extrabold text-white text-3xl sm:text-4xl border-2 border-[#60A5FA]/60 shadow-xl shadow-blue-500/20">
+                  AM
+                </div>
+                <div className="absolute -bottom-2 -right-2 bg-[#0B1220] border border-[#3B82F6]/40 text-[#60A5FA] px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-md">
+                  Lead Faculty
+                </div>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-black text-[#F8FAFC]">
+                Aman Mishra
+              </h3>
+              <p className="text-xs text-[#60A5FA] font-medium mt-1">
+                Founder & Lead Mathematics Educator
+              </p>
+            </div>
+
+            {/* Right: Credentials & Bio */}
+            <div className="lg:col-span-8 space-y-5">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-[#60A5FA]">
+                  Meet Your Educator
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-black text-[#F8FAFC] tracking-tight mt-1">
+                  Learn Mathematics with Conceptual Clarity
+                </h2>
+                <p className="text-xs sm:text-sm text-[#A7B5CC] leading-relaxed mt-2.5">
+                  Mathematics is not about memorising formulas; it is about developing logical intuition and disciplined problem-solving. At Mathematics Academy, every lesson is engineered to dismantle fear, cultivate genuine analytical appreciation, and prepare learners for academic excellence.
+                </p>
+              </div>
+
+              {/* Verified Credentials Pills */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                <div className="p-3.5 rounded-xl bg-[#0B1220] border border-[#3B82F6]/25 space-y-1">
+                  <div className="w-7 h-7 rounded-lg bg-[#14213A] border border-[#3B82F6]/30 text-[#60A5FA] flex items-center justify-center">
+                    <GraduationCap className="w-4 h-4 text-[#3B82F6]" />
+                  </div>
+                  <p className="text-xs font-bold text-[#F8FAFC]">IIT Delhi Alumnus</p>
+                  <p className="text-[11px] text-[#A7B5CC]">Strong analytical and academic foundation</p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-[#0B1220] border border-[#3B82F6]/25 space-y-1">
+                  <div className="w-7 h-7 rounded-lg bg-[#14213A] border border-[#3B82F6]/30 text-[#60A5FA] flex items-center justify-center">
+                    <Briefcase className="w-4 h-4 text-[#3B82F6]" />
+                  </div>
+                  <p className="text-xs font-bold text-[#F8FAFC]">Former Oracle Professional</p>
+                  <p className="text-[11px] text-[#A7B5CC]">Industry-grade algorithmic rigor</p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-[#0B1220] border border-[#3B82F6]/25 space-y-1">
+                  <div className="w-7 h-7 rounded-lg bg-[#14213A] border border-[#3B82F6]/30 text-[#60A5FA] flex items-center justify-center">
+                    <Clock className="w-4 h-4 text-[#3B82F6]" />
+                  </div>
+                  <p className="text-xs font-bold text-[#F8FAFC]">5 Years Teaching Experience</p>
+                  <p className="text-[11px] text-[#A7B5CC]">Focused on clarity and student results</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. About Section Preview */}
       {sectionsVisibility?.showAbout && about && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-[#101A2C] rounded-2xl border border-[#3B82F6]/25 p-6 sm:p-9 shadow-xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -428,11 +498,23 @@ export const HomePage = () => {
           <div className="bg-gradient-to-r from-[#0B1220] via-[#101A2C] to-[#14213A] rounded-2xl p-7 border border-[#3B82F6]/30 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
             <div className="space-y-1 text-center md:text-left">
               <h3 className="text-lg font-bold text-[#F8FAFC]">
-                Academic Enquiries & Admissions
+                Get in Touch
               </h3>
               <p className="text-xs text-[#A7B5CC]">
-                Have questions regarding the mathematics curriculum? Contact our academic office at{' '}
-                <span className="font-semibold text-[#60A5FA]">{contact.email}</span>.
+                Have questions about our mathematics courses? Connect with our academy at{' '}
+                <a
+                  href={`mailto:${contact.email || 'amanmishra7211@gmail.com'}`}
+                  className="font-semibold text-[#60A5FA] hover:underline"
+                >
+                  {contact.email || 'amanmishra7211@gmail.com'}
+                </a>{' '}
+                or call{' '}
+                <a
+                  href={`tel:${(contact.phone || '+91 85957 42861').replace(/[^\d+]/g, '')}`}
+                  className="font-semibold text-[#60A5FA] hover:underline"
+                >
+                  {contact.phone || '+91 85957 42861'}
+                </a>.
               </p>
             </div>
 

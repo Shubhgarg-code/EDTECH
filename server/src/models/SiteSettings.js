@@ -72,11 +72,11 @@ const siteSettingsSchema = new mongoose.Schema(
     contact: {
       email: {
         type: String,
-        default: 'contact@mathematicsacademy.in'
+        default: 'amanmishra7211@gmail.com'
       },
       phone: {
         type: String,
-        default: ''
+        default: '+91 85957 42861'
       },
       address: {
         type: String,
@@ -84,7 +84,7 @@ const siteSettingsSchema = new mongoose.Schema(
       },
       workingHours: {
         type: String,
-        default: 'Monday – Saturday: 9:00 AM – 7:00 PM IST'
+        default: ''
       },
       supportNotice: {
         type: String,

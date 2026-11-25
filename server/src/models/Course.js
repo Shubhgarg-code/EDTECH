@@ -43,10 +43,10 @@ const assignmentSchema = new mongoose.Schema({
 });
 
 const instructorSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  title: { type: String, default: 'Instructor' },
+  name: { type: String, default: 'Aman Mishra' },
+  title: { type: String, default: 'IIT Delhi Alumnus | Former Oracle | 5+ Years Experience' },
   avatar: { type: String, default: '' },
-  bio: { type: String, default: '' }
+  bio: { type: String, default: 'IIT Delhi alumnus and former Oracle professional with 5 years of teaching experience dedicated to concept-first mathematics.' }
 });
 
 const courseSchema = new mongoose.Schema(

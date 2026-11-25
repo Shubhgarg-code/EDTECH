@@ -87,13 +87,9 @@ export const ContactPage = () => {
     );
   }
 
-  const {
-    email: supportEmail,
-    phone: supportPhone,
-    address,
-    workingHours,
-    supportNotice
-  } = contactInfo || {};
+  const activeEmail = supportEmail || 'amanmishra7211@gmail.com';
+  const activePhone = supportPhone || '+91 85957 42861';
+  const rawPhone = activePhone.replace(/[^\d+]/g, '');
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-10 bg-[#070B14] text-[#F8FAFC]">
@@ -104,10 +100,10 @@ export const ContactPage = () => {
           <span>Academic Inquiries & Admissions</span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-black text-[#F8FAFC] tracking-tight">
-          Contact the Academy
+          Get in Touch
         </h1>
         <p className="text-sm text-[#A7B5CC] max-w-2xl mt-2 leading-relaxed">
-          Reach our academic counselor desk or support team. All course enquiries are handled directly by faculty coordinators.
+          Have questions about our mathematics courses? Connect with our academy.
         </p>
       </header>
 
@@ -125,72 +121,98 @@ export const ContactPage = () => {
               </p>
             </div>
 
-            <div className="space-y-5 text-xs">
-              {/* Email */}
-              <div className="flex items-start gap-3.5 pb-4 border-b border-[#3B82F6]/15">
-                <div className="w-9 h-9 rounded-xl bg-[#14213A] border border-[#3B82F6]/30 text-[#60A5FA] flex items-center justify-center shrink-0 mt-0.5">
-                  <Mail className="w-4 h-4 text-[#3B82F6]" />
+            <div className="space-y-4 text-xs">
+              {/* Student Enquiries / Phone Card */}
+              <div className="p-4 rounded-xl bg-[#0B1220] border border-[#3B82F6]/20 space-y-3">
+                <div className="flex items-start gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-[#14213A] border border-[#3B82F6]/40 text-[#60A5FA] flex items-center justify-center shrink-0">
+                    <Phone className="w-5 h-5 text-[#3B82F6]" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[11px] font-semibold text-[#A7B5CC] uppercase tracking-wider">
+                      Student Enquiries
+                    </p>
+                    <a
+                      href={`tel:${rawPhone}`}
+                      className="font-bold text-[#F8FAFC] hover:text-[#60A5FA] transition text-sm sm:text-base block truncate mt-0.5"
+                    >
+                      {activePhone}
+                    </a>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[11px] font-semibold text-[#A7B5CC] uppercase tracking-wider">
-                    Academic Inquiries
-                  </p>
+                <div className="pt-1">
                   <a
-                    href={`mailto:${supportEmail || 'contact@mathematicsacademy.in'}`}
-                    className="font-semibold text-[#F8FAFC] hover:text-[#60A5FA] transition text-sm"
+                    href={`tel:${rawPhone}`}
+                    className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-gradient-to-r from-[#2563EB] to-[#3B82F6] hover:brightness-110 text-white font-bold text-xs rounded-xl transition shadow-md shadow-blue-500/25 active:scale-95"
                   >
-                    {supportEmail || 'contact@mathematicsacademy.in'}
+                    <Phone className="w-3.5 h-3.5" />
+                    <span>Call Now</span>
                   </a>
                 </div>
               </div>
 
-              {/* Telephone */}
-              <div className="flex items-start gap-3.5 pb-4 border-b border-[#3B82F6]/15">
-                <div className="w-9 h-9 rounded-xl bg-[#14213A] border border-[#3B82F6]/30 text-[#60A5FA] flex items-center justify-center shrink-0 mt-0.5">
-                  <Phone className="w-4 h-4 text-[#3B82F6]" />
+              {/* Academic Enquiries / Email Card */}
+              <div className="p-4 rounded-xl bg-[#0B1220] border border-[#3B82F6]/20 space-y-3">
+                <div className="flex items-start gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-[#14213A] border border-[#3B82F6]/40 text-[#60A5FA] flex items-center justify-center shrink-0">
+                    <Mail className="w-5 h-5 text-[#3B82F6]" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[11px] font-semibold text-[#A7B5CC] uppercase tracking-wider">
+                      Academic Enquiries
+                    </p>
+                    <a
+                      href={`mailto:${activeEmail}`}
+                      className="font-bold text-[#F8FAFC] hover:text-[#60A5FA] transition text-sm sm:text-base block truncate mt-0.5"
+                    >
+                      {activeEmail}
+                    </a>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[11px] font-semibold text-[#A7B5CC] uppercase tracking-wider">
-                    Counselor Help Desk
-                  </p>
+                <div className="pt-1">
                   <a
-                    href={`tel:${supportPhone || '+9101149208000'}`}
-                    className="font-semibold text-[#F8FAFC] hover:text-[#60A5FA] transition text-sm"
+                    href={`mailto:${activeEmail}`}
+                    className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-[#14213A] hover:bg-[#1a2b4c] text-[#F8FAFC] border border-[#3B82F6]/40 font-bold text-xs rounded-xl transition hover:border-[#60A5FA] active:scale-95"
                   >
-                    {supportPhone || '+91 (011) 4920-8000'}
+                    <Mail className="w-3.5 h-3.5 text-[#60A5FA]" />
+                    <span>Email Us</span>
                   </a>
                 </div>
               </div>
 
-              {/* Physical Address */}
-              <div className="flex items-start gap-3.5 pb-4 border-b border-[#3B82F6]/15">
-                <div className="w-9 h-9 rounded-xl bg-[#14213A] border border-[#3B82F6]/30 text-[#60A5FA] flex items-center justify-center shrink-0 mt-0.5">
-                  <MapPin className="w-4 h-4 text-[#3B82F6]" />
+              {/* Optional Physical Address (Only displayed if explicitly configured in CMS) */}
+              {address && (
+                <div className="flex items-start gap-3.5 p-3.5 rounded-xl bg-[#0B1220] border border-[#3B82F6]/15">
+                  <div className="w-9 h-9 rounded-xl bg-[#14213A] border border-[#3B82F6]/30 text-[#60A5FA] flex items-center justify-center shrink-0 mt-0.5">
+                    <MapPin className="w-4 h-4 text-[#3B82F6]" />
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-semibold text-[#A7B5CC] uppercase tracking-wider">
+                      Academy Center
+                    </p>
+                    <p className="font-medium text-[#F8FAFC] leading-relaxed mt-0.5">
+                      {address}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[11px] font-semibold text-[#A7B5CC] uppercase tracking-wider">
-                    Academy Center
-                  </p>
-                  <p className="font-medium text-[#F8FAFC] leading-relaxed mt-0.5">
-                    {address || 'Mathematics Academy Campus, Academic Zone, New Delhi, India'}
-                  </p>
-                </div>
-              </div>
+              )}
 
-              {/* Working Hours */}
-              <div className="flex items-start gap-3.5">
-                <div className="w-9 h-9 rounded-xl bg-[#14213A] border border-[#3B82F6]/30 text-[#60A5FA] flex items-center justify-center shrink-0 mt-0.5">
-                  <Clock className="w-4 h-4 text-[#3B82F6]" />
+              {/* Optional Working Hours (Only displayed if explicitly configured in CMS) */}
+              {workingHours && (
+                <div className="flex items-start gap-3.5 p-3.5 rounded-xl bg-[#0B1220] border border-[#3B82F6]/15">
+                  <div className="w-9 h-9 rounded-xl bg-[#14213A] border border-[#3B82F6]/30 text-[#60A5FA] flex items-center justify-center shrink-0 mt-0.5">
+                    <Clock className="w-4 h-4 text-[#3B82F6]" />
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-semibold text-[#A7B5CC] uppercase tracking-wider">
+                      Academic Hours
+                    </p>
+                    <p className="font-medium text-[#F8FAFC] mt-0.5">
+                      {workingHours}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[11px] font-semibold text-[#A7B5CC] uppercase tracking-wider">
-                    Academic Hours
-                  </p>
-                  <p className="font-medium text-[#F8FAFC] mt-0.5">
-                    {workingHours || 'Monday – Saturday: 9:00 AM – 7:00 PM IST'}
-                  </p>
-                </div>
-              </div>
+              )}
             </div>
           </div>
 
@@ -224,7 +246,7 @@ export const ContactPage = () => {
               </div>
               <h3 className="font-bold text-[#F8FAFC] text-base">Inquiry Successfully Submitted</h3>
               <p className="text-xs text-[#A7B5CC] max-w-md mx-auto leading-relaxed">
-                Thank you. Your inquiry has been registered in our administrative portal. Our mathematics faculty coordinator will respond within 24 business hours.
+                Thank you. Your inquiry has been registered in our administrative portal. Our academic coordinator will respond within 24 business hours.
               </p>
               <div className="pt-2">
                 <button

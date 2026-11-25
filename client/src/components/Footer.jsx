@@ -116,23 +116,28 @@ export const Footer = () => {
             <ul className="space-y-2.5 text-xs text-[#A7B5CC]">
               <li className="flex items-center gap-2">
                 <Mail className="w-3.5 h-3.5 text-[#3B82F6] shrink-0" />
-                <span className="truncate">{contact?.email || 'contact@mathematicsacademy.in'}</span>
+                <a
+                  href={`mailto:${contact?.email || 'amanmishra7211@gmail.com'}`}
+                  className="truncate hover:text-[#60A5FA] transition"
+                >
+                  {contact?.email || 'amanmishra7211@gmail.com'}
+                </a>
               </li>
-              {contact?.phone && (
-                <li className="flex items-center gap-2">
-                  <Phone className="w-3.5 h-3.5 text-[#3B82F6] shrink-0" />
-                  <span>{contact.phone}</span>
-                </li>
-              )}
+              <li className="flex items-center gap-2">
+                <Phone className="w-3.5 h-3.5 text-[#3B82F6] shrink-0" />
+                <a
+                  href={`tel:${(contact?.phone || '+91 85957 42861').replace(/[^\d+]/g, '')}`}
+                  className="hover:text-[#60A5FA] transition"
+                >
+                  {contact?.phone || '+91 85957 42861'}
+                </a>
+              </li>
               {contact?.address && (
                 <li className="flex items-start gap-2">
                   <MapPin className="w-3.5 h-3.5 text-[#3B82F6] shrink-0 mt-0.5" />
                   <span className="leading-snug">{contact.address}</span>
                 </li>
               )}
-              <li className="pt-1 text-[11px] text-[#A7B5CC]/70">
-                Support Hours: Mon – Sat, 9 AM – 7 PM IST
-              </li>
             </ul>
           </div>
         </div>

@@ -8,7 +8,10 @@ import {
   Target,
   GraduationCap,
   Sparkles,
-  BookOpen
+  BookOpen,
+  Briefcase,
+  Clock,
+  Award
 } from 'lucide-react';
 
 export const AboutPage = () => {
@@ -77,6 +80,71 @@ export const AboutPage = () => {
           </div>
           <h2 className="text-lg font-bold text-[#F8FAFC]">Our Institutional Vision</h2>
           <p className="text-xs sm:text-sm text-[#A7B5CC] leading-relaxed">{vision}</p>
+        </div>
+      </section>
+
+      {/* Meet Your Educator / Leadership Profile */}
+      <section className="bg-[#101A2C] rounded-2xl border border-[#3B82F6]/25 p-7 sm:p-10 shadow-xl">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          {/* Avatar Initials Badge */}
+          <div className="lg:col-span-4 flex flex-col items-center text-center">
+            <div className="relative mb-4">
+              <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl bg-gradient-to-tr from-[#1E3A8A] via-[#2563EB] to-[#3B82F6] flex items-center justify-center font-extrabold text-white text-3xl sm:text-4xl border-2 border-[#60A5FA]/60 shadow-xl shadow-blue-500/20">
+                AM
+              </div>
+              <div className="absolute -bottom-2 -right-2 bg-[#0B1220] border border-[#3B82F6]/40 text-[#60A5FA] px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-md">
+                Lead Educator
+              </div>
+            </div>
+            <h3 className="text-xl sm:text-2xl font-black text-[#F8FAFC]">
+              Aman Mishra
+            </h3>
+            <p className="text-xs text-[#60A5FA] font-medium mt-1">
+              Founder & Lead Mathematics Educator
+            </p>
+          </div>
+
+          {/* Details & Credentials */}
+          <div className="lg:col-span-8 space-y-4">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#60A5FA]">
+                Educator Profile
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-black text-[#F8FAFC] tracking-tight mt-1">
+                Learn Mathematics with Conceptual Clarity
+              </h2>
+              <p className="text-xs sm:text-sm text-[#A7B5CC] leading-relaxed mt-2.5">
+                Aman Mishra leads Mathematics Academy with a dedication to transforming abstract mathematical concepts into intuitive, structured knowledge. His pedagogical methodology prioritises foundational clarity, algebraic fluency, and rigorous proof construction over rote memorisation.
+              </p>
+            </div>
+
+            {/* Highlights Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+              <div className="p-3.5 rounded-xl bg-[#0B1220] border border-[#3B82F6]/25 space-y-1">
+                <div className="w-7 h-7 rounded-lg bg-[#14213A] border border-[#3B82F6]/30 text-[#60A5FA] flex items-center justify-center">
+                  <GraduationCap className="w-4 h-4 text-[#3B82F6]" />
+                </div>
+                <p className="text-xs font-bold text-[#F8FAFC]">IIT Delhi Alumnus</p>
+                <p className="text-[11px] text-[#A7B5CC]">Rigorous analytical background</p>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-[#0B1220] border border-[#3B82F6]/25 space-y-1">
+                <div className="w-7 h-7 rounded-lg bg-[#14213A] border border-[#3B82F6]/30 text-[#60A5FA] flex items-center justify-center">
+                  <Briefcase className="w-4 h-4 text-[#3B82F6]" />
+                </div>
+                <p className="text-xs font-bold text-[#F8FAFC]">Former Oracle Professional</p>
+                <p className="text-[11px] text-[#A7B5CC]">Industry-tested problem solving</p>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-[#0B1220] border border-[#3B82F6]/25 space-y-1">
+                <div className="w-7 h-7 rounded-lg bg-[#14213A] border border-[#3B82F6]/30 text-[#60A5FA] flex items-center justify-center">
+                  <Clock className="w-4 h-4 text-[#3B82F6]" />
+                </div>
+                <p className="text-xs font-bold text-[#F8FAFC]">5 Years Experience</p>
+                <p className="text-[11px] text-[#A7B5CC]">Proven track record in pedagogy</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

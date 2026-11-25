@@ -63,10 +63,10 @@ export const seedDatabase = async () => {
         'Willingness to practise problems regularly and complete assignments'
       ],
       instructor: {
-        name: 'Mathematics Faculty',
-        title: 'Senior Mathematics Instructor',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80',
-        bio: 'Experienced educators committed to concept-first mathematics teaching.'
+        name: 'Aman Mishra',
+        title: 'IIT Delhi Alumnus | Former Oracle | 5+ Years Experience',
+        avatar: '',
+        bio: 'IIT Delhi alumnus and former Oracle professional with 5 years of mathematics teaching experience focused on building conceptual intuition and problem-solving rigor.'
       },
       isPublished: true,
       totalEnrolled: 1,

@@ -42,10 +42,10 @@ export const getOrCreateSettings = async () => {
         aboutImage: 'https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=800&auto=format&fit=crop&q=80'
       },
       contact: {
-        email: 'contact@mathematicsacademy.in',
-        phone: '',
+        email: 'amanmishra7211@gmail.com',
+        phone: '+91 85957 42861',
         address: '',
-        workingHours: 'Monday – Saturday: 9:00 AM – 7:00 PM IST',
+        workingHours: '',
         supportNotice: 'Our academic support team usually responds within 24 business hours.'
       },
       footer: {

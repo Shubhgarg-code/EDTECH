@@ -185,12 +185,12 @@ export const createCourse = async (req, res, next) => {
       features: features || [],
       prerequisites: prerequisites || [],
       instructor: typeof instructor === 'string'
-        ? { name: instructor, title: 'Lead Instructor', avatar: '', bio: '' }
+        ? { name: instructor, title: 'IIT Delhi Alumnus | Former Oracle | 5+ Years Experience', avatar: '', bio: 'IIT Delhi alumnus and former Oracle professional with 5 years of teaching experience.' }
         : (instructor || {
-            name: req.user ? req.user.name : 'Mathematics Instructor',
-            title: 'Lead Instructor',
+            name: 'Aman Mishra',
+            title: 'IIT Delhi Alumnus | Former Oracle | 5+ Years Experience',
             avatar: '',
-            bio: ''
+            bio: 'IIT Delhi alumnus and former Oracle professional with 5 years of teaching experience dedicated to concept-first mathematics.'
           }),
       isPublished: !!isPublished,
       modules: []

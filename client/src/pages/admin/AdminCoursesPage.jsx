@@ -43,9 +43,9 @@ export const AdminCoursesPage = () => {
     batchName: 'Batch 2026',
     startDate: 'Immediate Access',
     schedule: 'Flexible Learning',
-    instructorName: 'Academy Faculty',
-    instructorTitle: 'Senior Mathematics Instructor',
-    instructorBio: 'Dedicated to concept-first mathematics teaching and rigorous problem solving.',
+    instructorName: 'Aman Mishra',
+    instructorTitle: 'IIT Delhi Alumnus | Former Oracle | 5+ Years Experience',
+    instructorBio: 'IIT Delhi alumnus and former Oracle professional with 5 years of teaching experience dedicated to concept-first mathematics.',
     isPublished: true
   });
 
@@ -81,9 +81,9 @@ export const AdminCoursesPage = () => {
       batchName: 'Batch 2026',
       startDate: 'Immediate Access',
       schedule: 'Flexible Learning',
-      instructorName: 'Academy Faculty',
-      instructorTitle: 'Senior Mathematics Instructor',
-      instructorBio: 'Dedicated to concept-first mathematics teaching and rigorous problem solving.',
+      instructorName: 'Aman Mishra',
+      instructorTitle: 'IIT Delhi Alumnus | Former Oracle | 5+ Years Experience',
+      instructorBio: 'IIT Delhi alumnus and former Oracle professional with 5 years of teaching experience dedicated to concept-first mathematics.',
       isPublished: true
     });
     setModalOpen(true);
