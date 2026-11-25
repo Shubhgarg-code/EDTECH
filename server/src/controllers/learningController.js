@@ -1,6 +1,7 @@
 import { Course } from '../models/Course.js';
 import { User } from '../models/User.js';
 import { Progress } from '../models/Progress.js';
+import { storageService } from '../services/storageService.js';
 import crypto from 'crypto';
 
 export const getLmsClassroomData = async (req, res, next) => {
@@ -45,9 +46,32 @@ export const getLmsClassroomData = async (req, res, next) => {
       });
     }
 
+    // Prepare course payload with short-lived signed URLs for any private R2 / storage files
+    const courseData = course.toObject();
+    if (courseData.modules) {
+      for (const mod of courseData.modules) {
+        if (mod.lectures) {
+          for (const lec of mod.lectures) {
+            if (lec.videoSource === 'r2' || (lec.videoSource === 'upload' && !lec.videoUrl.startsWith('http'))) {
+              try {
+                lec.videoUrl = await storageService.getPlaybackUrl(lec.storageKey || lec.videoUrl);
+              } catch (e) {
+                console.warn(`[getLmsClassroomData] Failed to sign video URL for lecture ${lec._id}:`, e.message);
+              }
+            }
+            if (lec.notesUrl && !lec.notesUrl.startsWith('http')) {
+              try {
+                lec.notesUrl = await storageService.getFileUrl(lec.notesUrl);
+              } catch (e) {}
+            }
+          }
+        }
+      }
+    }
+
     res.status(200).json({
       success: true,
-      course,
+      course: courseData,
       progress
     });
   } catch (error) {

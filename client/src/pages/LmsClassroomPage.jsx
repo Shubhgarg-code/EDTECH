@@ -305,6 +305,8 @@ export const LmsClassroomPage = () => {
               <div className="rounded-2xl overflow-hidden border border-[#1E293B] shadow-2xl shadow-black/80 bg-black">
                 <VideoPlayer
                   src={currentLecture?.videoUrl}
+                  videoSource={currentLecture?.videoSource}
+                  youtubeVideoId={currentLecture?.youtubeVideoId}
                   title={currentLecture?.title}
                   isCompleted={isCurrentCompleted}
                   onToggleComplete={handleToggleComplete}

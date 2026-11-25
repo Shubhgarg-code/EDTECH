@@ -1,5 +1,7 @@
 import { Course } from '../models/Course.js';
 import { User } from '../models/User.js';
+import { storageService } from '../services/storageService.js';
+import { extractYouTubeId } from '../utils/youtube.js';
 
 // Public: Get published courses
 export const getAllCourses = async (req, res, next) => {
@@ -107,9 +109,11 @@ export const getCourseBySlug = async (req, res, next) => {
           duration: lec.duration,
           durationSeconds: lec.durationSeconds,
           isFreePreview: lec.isFreePreview,
+          isPublished: lec.isPublished,
           order: lec.order,
           videoSource: lec.videoSource,
           videoUrl: lec.isFreePreview ? lec.videoUrl : null,
+          youtubeVideoId: lec.isFreePreview ? lec.youtubeVideoId : null,
           hasNotes: !!lec.notesUrl || !!lec.notesContent,
           resourcesCount: lec.resources ? lec.resources.length : 0
         }))
@@ -374,9 +378,11 @@ export const addLecture = async (req, res, next) => {
       chapterTitle,
       videoSource,
       videoUrl,
+      storageKey,
       duration,
       durationSeconds,
       isFreePreview,
+      isPublished,
       notesSource,
       notesUrl,
       notesContent,
@@ -392,21 +398,42 @@ export const addLecture = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Target module ID is required.' });
     }
 
+    let finalSource = videoSource || 'youtube';
+    let yId = '';
+
+    // If source is youtube or if videoUrl matches YouTube pattern
+    const detectedYId = extractYouTubeId(videoUrl);
+    if (finalSource === 'youtube' || detectedYId) {
+      if (!detectedYId) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid YouTube URL. Please provide a valid YouTube watch, youtu.be, shorts or embed link.'
+        });
+      }
+      finalSource = 'youtube';
+      yId = detectedYId;
+    }
+
     const course = await Course.findById(courseId);
     if (!course) return res.status(404).json({ success: false, message: 'Course not found.' });
 
     const mod = course.modules.id(moduleId);
     if (!mod) return res.status(404).json({ success: false, message: 'Module not found.' });
 
+    const resolvedStorageKey = storageKey || (finalSource === 'r2' || finalSource === 'upload' ? (!videoUrl.startsWith('http') ? videoUrl : '') : '');
+
     mod.lectures.push({
       title,
       description: description || '',
       chapterTitle: chapterTitle || '',
-      videoSource: videoSource || 'external',
+      videoSource: finalSource,
       videoUrl,
+      youtubeVideoId: yId,
+      storageKey: resolvedStorageKey,
       duration: duration || '15:00',
       durationSeconds: durationSeconds || 900,
       isFreePreview: !!isFreePreview,
+      isPublished: isPublished !== undefined ? !!isPublished : true,
       notesSource: notesSource || 'text',
       notesUrl: notesUrl || '',
       notesContent: notesContent || '',
@@ -440,7 +467,27 @@ export const updateLecture = async (req, res, next) => {
     const lec = mod.lectures.id(lectureId);
     if (!lec) return res.status(404).json({ success: false, message: 'Lecture not found.' });
 
-    Object.assign(lec, req.body);
+    const updatePayload = { ...req.body };
+
+    // Validate YouTube if updated
+    if (updatePayload.videoUrl) {
+      const detectedYId = extractYouTubeId(updatePayload.videoUrl);
+      if (updatePayload.videoSource === 'youtube' || (!updatePayload.videoSource && lec.videoSource === 'youtube')) {
+        if (!detectedYId) {
+          return res.status(400).json({
+            success: false,
+            message: 'Invalid YouTube URL. Please provide a valid YouTube watch, youtu.be, shorts or embed link.'
+          });
+        }
+        updatePayload.youtubeVideoId = detectedYId;
+        updatePayload.videoSource = 'youtube';
+      } else if (detectedYId) {
+        updatePayload.youtubeVideoId = detectedYId;
+        updatePayload.videoSource = 'youtube';
+      }
+    }
+
+    Object.assign(lec, updatePayload);
     await course.save();
 
     res.status(200).json({
@@ -453,7 +500,7 @@ export const updateLecture = async (req, res, next) => {
   }
 };
 
-// Admin: Delete Lecture
+// Admin: Delete Lecture with Storage Object Cleanup
 export const deleteLecture = async (req, res, next) => {
   try {
     const { courseId, moduleId, lectureId } = req.params;
@@ -463,12 +510,71 @@ export const deleteLecture = async (req, res, next) => {
     const mod = course.modules.id(moduleId);
     if (!mod) return res.status(404).json({ success: false, message: 'Module not found.' });
 
+    const lec = mod.lectures.id(lectureId);
+    if (!lec) return res.status(404).json({ success: false, message: 'Lecture not found.' });
+
+    // Clean up physical R2 / local storage object if present
+    const storageKeyToDelete = lec.storageKey || (lec.videoSource === 'r2' || lec.videoSource === 'upload' ? lec.videoUrl : null);
+    if (storageKeyToDelete && !storageKeyToDelete.startsWith('http')) {
+      try {
+        await storageService.deleteFile(storageKeyToDelete);
+      } catch (delErr) {
+        console.warn('[deleteLecture] Failed to clean up storage object:', delErr.message);
+      }
+    }
+
     mod.lectures = mod.lectures.filter((l) => l._id.toString() !== lectureId);
     await course.save();
 
     res.status(200).json({
       success: true,
       message: 'Lecture deleted successfully',
+      course
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Admin: Reorder Lectures within a Module
+export const reorderLectures = async (req, res, next) => {
+  try {
+    const { courseId, moduleId } = req.params;
+    const { lectureIds } = req.body;
+
+    if (!Array.isArray(lectureIds)) {
+      return res.status(400).json({ success: false, message: 'lectureIds array is required.' });
+    }
+
+    const course = await Course.findById(courseId);
+    if (!course) return res.status(404).json({ success: false, message: 'Course not found.' });
+
+    const mod = course.modules.id(moduleId);
+    if (!mod) return res.status(404).json({ success: false, message: 'Module not found.' });
+
+    const lectureMap = new Map(mod.lectures.map((l) => [l._id.toString(), l]));
+    const reordered = [];
+
+    lectureIds.forEach((id, idx) => {
+      const lecture = lectureMap.get(id.toString());
+      if (lecture) {
+        lecture.order = idx + 1;
+        reordered.push(lecture);
+        lectureMap.delete(id.toString());
+      }
+    });
+
+    lectureMap.forEach((lecture) => {
+      lecture.order = reordered.length + 1;
+      reordered.push(lecture);
+    });
+
+    mod.lectures = reordered;
+    await course.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Lectures reordered successfully',
       course
     });
   } catch (error) {
