@@ -4,7 +4,7 @@ import { storageService } from '../services/storageService.js';
 
 // Storage engine – choose based on STORAGE_DRIVER
 let storage;
-if (process.env.STORAGE_DRIVER === 'r2') {
+if (process.env.STORAGE_DRIVER === 'r2' || process.env.STORAGE_DRIVER === 'b2') {
   // Use memory storage; actual upload happens in controller via storageService.uploadFile
   storage = multer.memoryStorage();
 } else {

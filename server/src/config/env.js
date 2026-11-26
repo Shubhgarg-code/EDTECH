@@ -11,8 +11,20 @@ export const ENV = {
   // Razorpay credentials – optional but must come from env in production
   RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
   RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET,
-  // Storage driver – local (dev) or r2 (production)
+  // Storage driver – local (dev), b2 (Backblaze B2), or r2 (Cloudflare R2)
   STORAGE_DRIVER: process.env.STORAGE_DRIVER || 'local',
+  // Backblaze B2 Configuration
+  B2_KEY_ID: process.env.B2_KEY_ID,
+  B2_APPLICATION_KEY: process.env.B2_APPLICATION_KEY,
+  B2_BUCKET_NAME: process.env.B2_BUCKET_NAME,
+  B2_ENDPOINT: process.env.B2_ENDPOINT,
+  B2_REGION: process.env.B2_REGION,
+  // Cloudflare R2 Configuration
+  R2_ACCOUNT_ID: process.env.R2_ACCOUNT_ID,
+  R2_ACCESS_KEY_ID: process.env.R2_ACCESS_KEY_ID,
+  R2_SECRET_ACCESS_KEY: process.env.R2_SECRET_ACCESS_KEY,
+  R2_BUCKET_NAME: process.env.R2_BUCKET_NAME,
+  R2_PUBLIC_URL: process.env.R2_PUBLIC_URL,
   CLIENT_URL: process.env.CLIENT_URL || 'http://localhost:5173',
 };
 
@@ -28,7 +40,21 @@ if (ENV.NODE_ENV === 'production') {
   if (!ENV.MONGODB_URI) {
     throw new Error('FATAL: MONGODB_URI is required in production');
   }
-  // R2 storage validation – abort if any credential missing
+
+  // Backblaze B2 storage validation in production
+  if (ENV.STORAGE_DRIVER === 'b2') {
+    const missing = [];
+    if (!process.env.B2_KEY_ID) missing.push('B2_KEY_ID');
+    if (!process.env.B2_APPLICATION_KEY) missing.push('B2_APPLICATION_KEY');
+    if (!process.env.B2_BUCKET_NAME) missing.push('B2_BUCKET_NAME');
+    if (!process.env.B2_ENDPOINT) missing.push('B2_ENDPOINT');
+    if (!process.env.B2_REGION) missing.push('B2_REGION');
+    if (missing.length) {
+      throw new Error(`FATAL: Missing required Backblaze B2 env vars in production: ${missing.join(', ')}`);
+    }
+  }
+
+  // Cloudflare R2 storage validation in production
   if (ENV.STORAGE_DRIVER === 'r2') {
     const missing = [];
     if (!process.env.R2_ACCOUNT_ID) missing.push('R2_ACCOUNT_ID');

@@ -99,25 +99,76 @@ export const getCourseBySlug = async (req, res, next) => {
 
     // Sanitize non-preview video URLs if student is not enrolled
     if (!isEnrolled) {
-      courseData.modules = courseData.modules.map((mod) => ({
-        ...mod,
-        lectures: mod.lectures.map((lec) => ({
-          _id: lec._id,
-          title: lec.title,
-          description: lec.description,
-          chapterTitle: lec.chapterTitle,
-          duration: lec.duration,
-          durationSeconds: lec.durationSeconds,
-          isFreePreview: lec.isFreePreview,
-          isPublished: lec.isPublished,
-          order: lec.order,
-          videoSource: lec.videoSource,
-          videoUrl: lec.isFreePreview ? lec.videoUrl : null,
-          youtubeVideoId: lec.isFreePreview ? lec.youtubeVideoId : null,
-          hasNotes: !!lec.notesUrl || !!lec.notesContent,
-          resourcesCount: lec.resources ? lec.resources.length : 0
-        }))
-      }));
+      courseData.modules = await Promise.all(
+        courseData.modules.map(async (mod) => {
+          const lectures = await Promise.all(
+            mod.lectures.map(async (lec) => {
+              let previewUrl = null;
+              if (lec.isFreePreview) {
+                if (lec.videoSource === 'youtube') {
+                  previewUrl = lec.videoUrl;
+                } else if (lec.videoUrl) {
+                  try {
+                    previewUrl = await storageService.getPlaybackUrl(lec.storageKey || lec.videoUrl);
+                  } catch (e) {
+                    previewUrl = null;
+                  }
+                }
+              }
+
+              return {
+                _id: lec._id,
+                title: lec.title,
+                description: lec.description,
+                chapterTitle: lec.chapterTitle,
+                duration: lec.duration,
+                durationSeconds: lec.durationSeconds,
+                isFreePreview: lec.isFreePreview,
+                isPublished: lec.isPublished,
+                order: lec.order,
+                videoSource: lec.videoSource,
+                videoUrl: previewUrl,
+                youtubeVideoId: lec.isFreePreview ? lec.youtubeVideoId : null,
+                hasNotes: !!lec.notesUrl || !!lec.notesContent,
+                resourcesCount: lec.resources ? lec.resources.length : 0
+              };
+            })
+          );
+          return { ...mod, lectures };
+        })
+      );
+    } else {
+      // Enrolled student or admin: sign private video URLs and notes
+      for (const mod of courseData.modules) {
+        if (mod.lectures) {
+          for (const lec of mod.lectures) {
+            if (
+              lec.videoSource === 'b2' ||
+              lec.videoSource === 'r2' ||
+              (lec.videoSource === 'upload' && !lec.videoUrl.startsWith('http')) ||
+              (lec.storageKey && !lec.videoUrl.startsWith('http'))
+            ) {
+              try {
+                lec.videoUrl = await storageService.getPlaybackUrl(lec.storageKey || lec.videoUrl);
+              } catch (e) {}
+            }
+            if (lec.notesUrl && !lec.notesUrl.startsWith('http')) {
+              try {
+                lec.notesUrl = await storageService.getFileUrl(lec.notesUrl);
+              } catch (e) {}
+            }
+            if (lec.resources && Array.isArray(lec.resources)) {
+              for (const resItem of lec.resources) {
+                if (resItem.url && !resItem.url.startsWith('http')) {
+                  try {
+                    resItem.url = await storageService.getFileUrl(resItem.url);
+                  } catch (e) {}
+                }
+              }
+            }
+          }
+        }
+      }
     }
 
     res.status(200).json({
@@ -420,7 +471,7 @@ export const addLecture = async (req, res, next) => {
     const mod = course.modules.id(moduleId);
     if (!mod) return res.status(404).json({ success: false, message: 'Module not found.' });
 
-    const resolvedStorageKey = storageKey || (finalSource === 'r2' || finalSource === 'upload' ? (!videoUrl.startsWith('http') ? videoUrl : '') : '');
+    const resolvedStorageKey = storageKey || (finalSource === 'b2' || finalSource === 'r2' || finalSource === 'upload' ? (!videoUrl.startsWith('http') ? videoUrl : '') : '');
 
     mod.lectures.push({
       title,
@@ -513,8 +564,8 @@ export const deleteLecture = async (req, res, next) => {
     const lec = mod.lectures.id(lectureId);
     if (!lec) return res.status(404).json({ success: false, message: 'Lecture not found.' });
 
-    // Clean up physical R2 / local storage object if present
-    const storageKeyToDelete = lec.storageKey || (lec.videoSource === 'r2' || lec.videoSource === 'upload' ? lec.videoUrl : null);
+    // Clean up physical B2 / R2 / local storage object if present
+    const storageKeyToDelete = lec.storageKey || (lec.videoSource === 'b2' || lec.videoSource === 'r2' || lec.videoSource === 'upload' ? lec.videoUrl : null);
     if (storageKeyToDelete && !storageKeyToDelete.startsWith('http')) {
       try {
         await storageService.deleteFile(storageKeyToDelete);

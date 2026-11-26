@@ -1,12 +1,18 @@
-// storageService.js – Cloudflare R2 (S3‑compatible) integration
+// storageService.js – Multi-cloud S3-compatible integration (Backblaze B2 & Cloudflare R2) + Local Disk
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import crypto from 'crypto';
 import { ENV } from '../config/env.js';
 
-// AWS SDK v3 – S3 client (compatible with Cloudflare R2)
-import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+// AWS SDK v3 – S3 client (compatible with Backblaze B2 and Cloudflare R2)
+import {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand,
+  GetObjectCommand,
+  HeadObjectCommand
+} from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -19,77 +25,153 @@ if (!fs.existsSync(localUploadDir)) {
 }
 
 /**
- * Storage Service Adapter – supports local disk (development) and Cloudflare R2 (production).
+ * Storage Service Adapter – supports Backblaze B2, Cloudflare R2, and local disk.
  */
 class StorageService {
   constructor() {
     this.driver = process.env.STORAGE_DRIVER || 'local';
     this.isPersistent = this.driver !== 'local' || process.env.PERSISTENT_DISK === 'true';
+
+    this.requiredB2Vars = ['B2_KEY_ID', 'B2_APPLICATION_KEY', 'B2_BUCKET_NAME', 'B2_ENDPOINT', 'B2_REGION'];
     this.requiredR2Vars = ['R2_ACCOUNT_ID', 'R2_ACCESS_KEY_ID', 'R2_SECRET_ACCESS_KEY', 'R2_BUCKET_NAME'];
+
+    this.s3Client = null;
+    this.r2Client = null; // backward compatibility alias
+    this.bucket = null;
+    this.publicBase = null;
+    this.missingVars = [];
 
     if (ENV.NODE_ENV === 'production' && !this.isPersistent) {
       console.warn(
         '⚠️  [Storage Advisory]: Running with local disk storage in production. '
         + 'Files uploaded to /uploads will be ephemeral unless a persistent disk is mounted. '
-        + 'Configure Cloudflare R2 via STORAGE_DRIVER=r2 for persistent storage.'
+        + 'Configure Backblaze B2 (STORAGE_DRIVER=b2) or Cloudflare R2 (STORAGE_DRIVER=r2) for persistent storage.'
       );
     }
 
-    // Initialise R2 client when driver is r2
-    this.initR2();
+    // Initialize cloud driver if configured
+    this.initClient();
   }
 
-  initR2() {
-    const missing = this.requiredR2Vars.filter(v => !process.env[v]);
-    this.missingR2Vars = missing;
-
-    if (this.driver === 'r2') {
+  initClient() {
+    if (this.driver === 'b2') {
+      const missing = this.requiredB2Vars.filter((v) => !process.env[v]);
+      this.missingVars = missing;
       if (missing.length) {
-        console.warn(`⚠️  [StorageService] Missing R2 env vars: ${missing.join(', ')}`);
+        console.warn(`⚠️  [StorageService] Missing Backblaze B2 env vars: ${missing.join(', ')}`);
+        this.s3Client = null;
         this.r2Client = null;
       } else {
         try {
-          this.r2Client = new S3Client({
+          this.s3Client = new S3Client({
+            endpoint: process.env.B2_ENDPOINT,
+            region: process.env.B2_REGION || 'us-east-005',
+            credentials: {
+              accessKeyId: process.env.B2_KEY_ID,
+              secretAccessKey: process.env.B2_APPLICATION_KEY
+            }
+          });
+          this.r2Client = this.s3Client;
+          this.bucket = process.env.B2_BUCKET_NAME;
+          this.publicBase = process.env.B2_PUBLIC_URL?.replace(/\/*$/, '') || null;
+          console.log(`✅ [StorageService] Backblaze B2 S3 client initialized for bucket "${this.bucket}" (${process.env.B2_REGION || 'us-east-005'})`);
+        } catch (err) {
+          console.error('❌ [StorageService] Error initializing Backblaze B2 S3 client:', err.message);
+          this.s3Client = null;
+          this.r2Client = null;
+        }
+      }
+    } else if (this.driver === 'r2') {
+      const missing = this.requiredR2Vars.filter((v) => !process.env[v]);
+      this.missingVars = missing;
+      if (missing.length) {
+        console.warn(`⚠️  [StorageService] Missing R2 env vars: ${missing.join(', ')}`);
+        this.s3Client = null;
+        this.r2Client = null;
+      } else {
+        try {
+          this.s3Client = new S3Client({
             endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-            region: 'auto', // Cloudflare uses auto pseudo‑region
+            region: 'auto',
             credentials: {
               accessKeyId: process.env.R2_ACCESS_KEY_ID,
               secretAccessKey: process.env.R2_SECRET_ACCESS_KEY
             }
           });
+          this.r2Client = this.s3Client;
           this.bucket = process.env.R2_BUCKET_NAME;
-          this.publicBase = process.env.R2_PUBLIC_URL?.replace(/\/*$/, '');
+          this.publicBase = process.env.R2_PUBLIC_URL?.replace(/\/*$/, '') || null;
           console.log(`✅ [StorageService] Cloudflare R2 client initialized for bucket "${this.bucket}"`);
         } catch (err) {
           console.error('❌ [StorageService] Error initializing R2 S3 client:', err.message);
+          this.s3Client = null;
           this.r2Client = null;
         }
       }
     }
   }
 
+  isCloudStorageConfigured() {
+    return Boolean(this.s3Client && (this.driver === 'b2' || this.driver === 'r2'));
+  }
+
+  isB2Configured() {
+    return {
+      driver: this.driver,
+      configured: Boolean(this.s3Client && this.driver === 'b2'),
+      missing: this.driver === 'b2' ? this.missingVars : this.requiredB2Vars.filter((v) => !process.env[v]),
+      bucket: this.driver === 'b2' ? this.bucket : null,
+      endpoint: process.env.B2_ENDPOINT || null,
+      region: process.env.B2_REGION || null
+    };
+  }
+
   isR2Configured() {
     return {
       driver: this.driver,
-      configured: Boolean(this.r2Client && this.driver === 'r2'),
-      missing: this.missingR2Vars,
-      bucket: this.bucket || null,
+      configured: Boolean(this.s3Client && this.driver === 'r2'),
+      missing: this.driver === 'r2' ? this.missingVars : this.requiredR2Vars.filter((v) => !process.env[v]),
+      bucket: this.driver === 'r2' ? this.bucket : null,
       hasPublicBase: Boolean(this.publicBase)
     };
   }
 
   /**
-   * Generate a Presigned PUT URL for direct-to-R2 browser uploads.
-   * This completely avoids streaming large videos through Node.js Express memory buffers.
+   * Check if a file object exists in storage (HeadObject).
+   */
+  async checkFileExists(filename) {
+    if (!filename) return false;
+    if (this.isCloudStorageConfigured()) {
+      try {
+        await this.s3Client.send(new HeadObjectCommand({ Bucket: this.bucket, Key: filename }));
+        return true;
+      } catch (err) {
+        if (err.name === 'NotFound' || err.$metadata?.httpStatusCode === 404) {
+          return false;
+        }
+        throw err;
+      }
+    }
+
+    // Local fallback check
+    const filePath = path.join(localUploadDir, path.basename(filename));
+    return fs.existsSync(filePath);
+  }
+
+  /**
+   * Generate a Presigned PUT URL for direct browser uploads to Backblaze B2 / R2.
+   * Large files upload directly to storage without passing through Render's Node memory buffer.
    */
   async getPresignedUploadUrl({ fileName, fileType, folder = 'videos', expiresIn = 3600 }) {
-    if (!this.r2Client || this.driver !== 'r2') {
+    if (!this.isCloudStorageConfigured()) {
+      const driverName = this.driver === 'b2' ? 'Backblaze B2' : (this.driver === 'r2' ? 'Cloudflare R2' : 'Cloud Storage');
+      const reqVars = this.driver === 'b2' ? this.requiredB2Vars : this.requiredR2Vars;
       return {
         success: false,
         driver: this.driver,
         configured: false,
-        missing: this.missingR2Vars,
-        message: 'Cloudflare R2 is not configured on this server. Provide R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME and STORAGE_DRIVER=r2.'
+        missing: this.missingVars.length ? this.missingVars : reqVars,
+        message: `${driverName} is not configured on this server. Set ${reqVars.join(', ')} and STORAGE_DRIVER=${this.driver === 'r2' ? 'r2' : 'b2'}.`
       };
     }
 
@@ -106,29 +188,29 @@ class StorageService {
       const command = new PutObjectCommand({
         Bucket: this.bucket,
         Key: storageKey,
-        ContentType: fileType || 'video/mp4'
+        ContentType: fileType || 'application/octet-stream'
       });
 
-      const uploadUrl = await getSignedUrl(this.r2Client, command, { expiresIn });
+      const uploadUrl = await getSignedUrl(this.s3Client, command, { expiresIn });
 
       return {
         success: true,
-        driver: 'r2',
+        driver: this.driver,
         configured: true,
         uploadUrl,
         storageKey,
+        bucket: this.bucket,
         publicUrl: this.publicBase ? `${this.publicBase}/${storageKey}` : null,
         expiresIn
       };
     } catch (err) {
-      console.error('[StorageService] Error creating presigned PUT URL:', err);
+      console.error(`[StorageService] Error creating presigned PUT URL for ${this.driver}:`, err);
       throw err;
     }
   }
 
   /**
-   * For the local driver Multer writes directly to disk, so we just return the filename.
-   * For R2 we upload the in‑memory buffer.
+   * Upload an in-memory buffer or disk file to storage.
    */
   async uploadFile(file) {
     const ext = path.extname(file.originalname);
@@ -139,9 +221,9 @@ class StorageService {
     const unique = `${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;
     const key = `${safeBase}-${unique}${ext}`;
 
-    if (this.driver === 'r2' && this.r2Client) {
+    if (this.isCloudStorageConfigured()) {
       try {
-        await this.r2Client.send(
+        await this.s3Client.send(
           new PutObjectCommand({
             Bucket: this.bucket,
             Key: key,
@@ -149,9 +231,9 @@ class StorageService {
             ContentType: file.mimetype
           })
         );
-        return key; // R2 object key
+        return key;
       } catch (err) {
-        console.error('R2 upload error:', err);
+        console.error(`[StorageService] ${this.driver} upload error:`, err);
         throw err;
       }
     }
@@ -162,7 +244,7 @@ class StorageService {
 
   /**
    * Return a URL that can be used by the frontend to stream or download the file.
-   * For R2 we either use a configured public base URL or a short-lived signed GET URL.
+   * For private B2/R2 buckets, returns a short-lived signed GET URL (default 1 hour expiry).
    */
   async getFileUrl(filename, expiresIn = 3600) {
     if (!filename) return '';
@@ -172,16 +254,16 @@ class StorageService {
       return filename;
     }
 
-    if (this.driver === 'r2' && this.r2Client) {
+    if (this.isCloudStorageConfigured()) {
       if (this.publicBase) {
         return `${this.publicBase}/${filename}`;
       }
       try {
         const command = new GetObjectCommand({ Bucket: this.bucket, Key: filename });
-        const signed = await getSignedUrl(this.r2Client, command, { expiresIn });
+        const signed = await getSignedUrl(this.s3Client, command, { expiresIn });
         return signed;
       } catch (err) {
-        console.warn(`[StorageService] Failed to sign R2 GET URL for "${filename}":`, err.message);
+        console.warn(`[StorageService] Failed to sign ${this.driver} GET URL for "${filename}":`, err.message);
         return filename;
       }
     }
@@ -209,12 +291,12 @@ class StorageService {
    */
   async deleteFile(filename) {
     if (!filename) return false;
-    if (this.driver === 'r2' && this.r2Client) {
+    if (this.isCloudStorageConfigured()) {
       try {
-        await this.r2Client.send(new DeleteObjectCommand({ Bucket: this.bucket, Key: filename }));
+        await this.s3Client.send(new DeleteObjectCommand({ Bucket: this.bucket, Key: filename }));
         return true;
       } catch (err) {
-        console.warn('[StorageService] R2 delete failed:', err.message);
+        console.warn(`[StorageService] ${this.driver} delete failed:`, err.message);
         return false;
       }
     }
@@ -238,9 +320,13 @@ class StorageService {
       driver: this.driver,
       isPersistent: this.isPersistent,
       localDirectory: localUploadDir,
-      r2Configured: Boolean(this.r2Client && this.driver === 'r2'),
-      missingR2Vars: this.missingR2Vars,
-      bucket: this.bucket || null
+      configured: this.isCloudStorageConfigured(),
+      b2Configured: Boolean(this.s3Client && this.driver === 'b2'),
+      r2Configured: Boolean(this.s3Client && this.driver === 'r2'),
+      missingVars: this.missingVars,
+      bucket: this.bucket || null,
+      endpoint: this.driver === 'b2' ? process.env.B2_ENDPOINT : (this.driver === 'r2' && process.env.R2_ACCOUNT_ID ? `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com` : null),
+      region: this.driver === 'b2' ? process.env.B2_REGION : (this.driver === 'r2' ? 'auto' : null)
     };
   }
 }

@@ -4,14 +4,14 @@ const resourceSchema = new mongoose.Schema({
   title: { type: String, required: true },
   url: { type: String, required: true },
   type: { type: String, enum: ['pdf', 'document', 'github', 'zip', 'link', 'other'], default: 'link' },
-  source: { type: String, enum: ['upload', 'external'], default: 'external' }
+  source: { type: String, enum: ['upload', 'external', 'r2', 'b2'], default: 'external' }
 });
 
 const lectureSchema = new mongoose.Schema({
   title: { type: String, required: true, trim: true },
   description: { type: String, default: '' },
   chapterTitle: { type: String, default: '' },
-  videoSource: { type: String, enum: ['youtube', 'upload', 'r2', 'external'], default: 'youtube' },
+  videoSource: { type: String, enum: ['youtube', 'upload', 'r2', 'b2', 'external'], default: 'youtube' },
   videoUrl: { type: String, required: true },
   youtubeVideoId: { type: String, default: '' },
   storageKey: { type: String, default: '' },

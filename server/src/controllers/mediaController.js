@@ -33,12 +33,13 @@ export const getPresignedUpload = async (req, res, next) => {
     const ext = path.extname(fileName).toLowerCase();
     const isVideo = ['.mp4', '.webm', '.mkv'].includes(ext) || fileType?.startsWith('video/');
     const isPdf = ext === '.pdf' || fileType === 'application/pdf';
+    const isDoc = ['.doc', '.docx', '.zip', '.txt'].includes(ext) || fileType?.includes('document') || fileType?.includes('zip');
     const isImage = ['.png', '.jpg', '.jpeg', '.webp'].includes(ext) || fileType?.startsWith('image/');
 
-    if (!isVideo && !isPdf && !isImage) {
+    if (!isVideo && !isPdf && !isImage && !isDoc) {
       return res.status(400).json({
         success: false,
-        message: `Unsupported file type "${ext}". Allowed types: MP4, WebM, PDF, PNG, JPG, WebP.`
+        message: `Unsupported file type "${ext}". Allowed types: MP4, WebM, PDF, DOCX, ZIP, PNG, JPG, WebP.`
       });
     }
 

@@ -46,25 +46,59 @@ export const getLmsClassroomData = async (req, res, next) => {
       });
     }
 
-    // Prepare course payload with short-lived signed URLs for any private R2 / storage files
+    // Prepare course payload with short-lived signed URLs for any private B2 / R2 / storage files
     const courseData = course.toObject();
     if (courseData.modules) {
       for (const mod of courseData.modules) {
         if (mod.lectures) {
           for (const lec of mod.lectures) {
-            if (lec.videoSource === 'r2' || (lec.videoSource === 'upload' && !lec.videoUrl.startsWith('http'))) {
+            // Sign private video URLs
+            if (
+              lec.videoSource === 'b2' ||
+              lec.videoSource === 'r2' ||
+              (lec.videoSource === 'upload' && !lec.videoUrl.startsWith('http')) ||
+              (lec.storageKey && !lec.videoUrl.startsWith('http'))
+            ) {
               try {
                 lec.videoUrl = await storageService.getPlaybackUrl(lec.storageKey || lec.videoUrl);
               } catch (e) {
                 console.warn(`[getLmsClassroomData] Failed to sign video URL for lecture ${lec._id}:`, e.message);
               }
             }
+
+            // Sign private PDF notes
             if (lec.notesUrl && !lec.notesUrl.startsWith('http')) {
               try {
                 lec.notesUrl = await storageService.getFileUrl(lec.notesUrl);
-              } catch (e) {}
+              } catch (e) {
+                console.warn(`[getLmsClassroomData] Failed to sign notes URL for lecture ${lec._id}:`, e.message);
+              }
+            }
+
+            // Sign supplementary resources & problem sheets
+            if (lec.resources && Array.isArray(lec.resources)) {
+              for (const resource of lec.resources) {
+                if (resource.url && !resource.url.startsWith('http')) {
+                  try {
+                    resource.url = await storageService.getFileUrl(resource.url);
+                  } catch (e) {
+                    console.warn(`[getLmsClassroomData] Failed to sign resource URL for ${resource.title}:`, e.message);
+                  }
+                }
+              }
             }
           }
+        }
+      }
+    }
+
+    // Sign assignment reference files
+    if (courseData.assignments && Array.isArray(courseData.assignments)) {
+      for (const assign of courseData.assignments) {
+        if (assign.referenceFileUrl && !assign.referenceFileUrl.startsWith('http')) {
+          try {
+            assign.referenceFileUrl = await storageService.getFileUrl(assign.referenceFileUrl);
+          } catch (e) {}
         }
       }
     }

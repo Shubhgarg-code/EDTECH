@@ -254,20 +254,20 @@ export const AdminCourseContentPage = () => {
         folder: 'lectures'
       });
 
-      // If R2 is not configured, inform administrator and offer fallback
-      if (!presignRes.configured && presignRes.driver !== 'r2') {
+      // If Cloud Storage is not configured, inform administrator and offer fallback
+      if (!presignRes.configured && presignRes.driver !== 'b2' && presignRes.driver !== 'r2') {
         setUploadError(
           presignRes.message ||
-          'Cloudflare R2 is not configured on Render yet. To enable direct uploads, set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME and STORAGE_DRIVER=r2. You can use YouTube video lectures immediately.'
+          'Cloud storage is not configured on Render yet. To enable direct uploads to Backblaze B2, set STORAGE_DRIVER=b2, B2_KEY_ID, B2_APPLICATION_KEY, B2_BUCKET_NAME, B2_ENDPOINT, and B2_REGION. You can use YouTube video lectures immediately.'
         );
-        showToast('R2 storage is not active. Use YouTube or configure R2.', 'error');
+        showToast('B2 storage is not active. Use YouTube or configure B2 in Render.', 'error');
         setIsUploadingVideo(false);
         return;
       }
 
-      const { uploadUrl, storageKey: key, publicUrl } = presignRes;
+      const { uploadUrl, storageKey: key, publicUrl, driver: activeDriver } = presignRes;
 
-      // 2. Direct upload to Cloudflare R2 using XMLHttpRequest to monitor progress
+      // 2. Direct upload to Backblaze B2 / Cloud Storage using XMLHttpRequest to monitor progress
       const xhr = new XMLHttpRequest();
       setActiveUploadXhr(xhr);
 
@@ -283,9 +283,11 @@ export const AdminCourseContentPage = () => {
         if (xhr.status >= 200 && xhr.status < 300) {
           setStorageKey(key);
           setVideoUrl(publicUrl || key);
+          setVideoSource(activeDriver === 'b2' ? 'b2' : (activeDriver === 'r2' ? 'r2' : 'upload'));
           setUploadProgress(100);
           setIsUploadingVideo(false);
-          showToast('Video uploaded directly to Cloudflare R2! 🎉', 'success');
+          const driverLabel = activeDriver === 'b2' ? 'Backblaze B2' : 'Cloud Storage';
+          showToast(`Video uploaded directly to ${driverLabel}! 🎉`, 'success');
 
           // Confirm registration
           try {
@@ -300,7 +302,7 @@ export const AdminCourseContentPage = () => {
             // Optional registration log
           }
         } else {
-          setUploadError(`R2 direct upload failed with status ${xhr.status}.`);
+          setUploadError(`Storage direct upload failed with status ${xhr.status}.`);
           showToast('Video upload failed.', 'error');
           setIsUploadingVideo(false);
         }
@@ -308,8 +310,8 @@ export const AdminCourseContentPage = () => {
 
       xhr.onerror = () => {
         setActiveUploadXhr(null);
-        setUploadError('Network error during R2 upload. Check bucket CORS settings or connection.');
-        showToast('Upload network error.', 'error');
+        setUploadError('Network error during upload. Please verify B2 bucket CORS settings or internet connection.');
+        showToast('Upload network error. Check B2 CORS.', 'error');
         setIsUploadingVideo(false);
       };
 
@@ -597,17 +599,31 @@ export const AdminCourseContentPage = () => {
         </div>
       </div>
 
-      {/* R2 Storage Status Notice if applicable */}
-      {storageStatus && !storageStatus.r2Configured && (
-        <div className="bg-[#101A2C] border border-amber-500/30 rounded-2xl p-4 flex items-start gap-3 text-xs text-[#A7B5CC]">
-          <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+      {/* Storage Status Notice: Backblaze B2 / Cloud Storage */}
+      {storageStatus && (storageStatus.b2Configured || storageStatus.r2Configured) ? (
+        <div className="bg-[#101A2C] border border-emerald-500/30 rounded-2xl p-4 flex items-start gap-3 text-xs text-[#A7B5CC]">
+          <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
           <div className="space-y-1">
-            <span className="font-bold text-amber-300">Cloudflare R2 Object Storage Notice:</span>
+            <span className="font-bold text-emerald-300">
+              {storageStatus.b2Configured ? 'Backblaze B2 Storage Connected' : 'Cloud Storage Connected'}
+            </span>
             <p>
-              Render is currently operating in local storage mode. <strong>YouTube video lectures are 100% active and recommended.</strong> To enable direct large MP4/WebM uploads straight to Cloudflare R2, set <code className="text-[#38BDF8]">R2_ACCOUNT_ID</code>, <code className="text-[#38BDF8]">R2_ACCESS_KEY_ID</code>, <code className="text-[#38BDF8]">R2_SECRET_ACCESS_KEY</code>, <code className="text-[#38BDF8]">R2_BUCKET_NAME</code>, and <code className="text-[#38BDF8]">STORAGE_DRIVER=r2</code> in the Render dashboard.
+              Bucket: <code className="text-[#38BDF8] font-mono">{storageStatus.bucket}</code> • Region: <code className="text-[#38BDF8] font-mono">{storageStatus.region || 'us-east-005'}</code> • Presigned direct video and document uploads are fully active.
             </p>
           </div>
         </div>
+      ) : (
+        storageStatus && (
+          <div className="bg-[#101A2C] border border-amber-500/30 rounded-2xl p-4 flex items-start gap-3 text-xs text-[#A7B5CC]">
+            <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <span className="font-bold text-amber-300">Backblaze B2 Storage Advisory:</span>
+              <p>
+                Render is currently operating in local storage mode. <strong>YouTube video lectures are 100% active and recommended.</strong> To enable direct large MP4/WebM uploads straight to your Backblaze B2 bucket, set <code className="text-[#38BDF8]">STORAGE_DRIVER=b2</code>, <code className="text-[#38BDF8]">B2_KEY_ID</code>, <code className="text-[#38BDF8]">B2_APPLICATION_KEY</code>, <code className="text-[#38BDF8]">B2_BUCKET_NAME=mathematics-academy-storage</code>, <code className="text-[#38BDF8]">B2_ENDPOINT=https://s3.us-east-005.backblazeb2.com</code>, and <code className="text-[#38BDF8]">B2_REGION=us-east-005</code> in the Render dashboard.
+              </p>
+            </div>
+          </div>
+        )
       )}
 
       {/* Course Modules List */}
@@ -725,7 +741,7 @@ export const AdminCourseContentPage = () => {
                             <span className="capitalize">
                               {lec.videoSource === 'youtube' || lec.youtubeVideoId
                                 ? `YouTube: ${lec.youtubeVideoId || 'Linked'}`
-                                : (lec.videoSource === 'r2' ? 'Cloudflare R2' : 'External Stream')}
+                                : (lec.videoSource === 'b2' ? 'Backblaze B2' : (lec.videoSource === 'r2' ? 'Cloudflare R2' : 'External Stream'))}
                             </span>
                             {lec.notesUrl && (
                               <span className="text-[#60A5FA] font-semibold">• PDF Notes</span>
@@ -968,17 +984,17 @@ export const AdminCourseContentPage = () => {
                     <button
                       type="button"
                       onClick={() => {
-                        setVideoSource('r2');
+                        setVideoSource(storageStatus?.driver === 'b2' ? 'b2' : 'r2');
                         setUploadError('');
                       }}
                       className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition cursor-pointer text-xs ${
-                        videoSource === 'r2'
+                        videoSource === 'r2' || videoSource === 'b2'
                           ? 'bg-[#2563EB] text-white shadow'
                           : 'text-[#A7B5CC] hover:text-white'
                       }`}
                     >
                       <Cloud className="w-3.5 h-3.5" />
-                      <span>R2 Upload</span>
+                      <span>{storageStatus?.driver === 'b2' ? 'B2 Upload' : 'Cloud Upload'}</span>
                     </button>
                     <button
                       type="button"
@@ -1044,11 +1060,11 @@ export const AdminCourseContentPage = () => {
                   </div>
                 )}
 
-                {/* 2. CLOUDFLARE R2 DIRECT UPLOAD SECTION */}
-                {videoSource === 'r2' && (
+                {/* 2. BACKBLAZE B2 / CLOUD DIRECT UPLOAD SECTION */}
+                {(videoSource === 'b2' || videoSource === 'r2') && (
                   <div className="space-y-3 pt-1">
                     <p className="text-[11px] text-[#A7B5CC]">
-                      Upload MP4 or WebM video directly to Cloudflare R2 bucket. Max file size: 500 MB.
+                      Upload MP4 or WebM video directly to {storageStatus?.b2Configured ? 'Backblaze B2' : 'Cloud Storage'} bucket. Max file size: 500 MB.
                     </p>
 
                     <div className="p-4 rounded-xl border border-dashed border-[#3B82F6]/40 bg-[#070B14] flex flex-col items-center justify-center text-center space-y-2">
