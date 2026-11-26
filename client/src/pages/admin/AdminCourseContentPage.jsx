@@ -255,7 +255,7 @@ export const AdminCourseContentPage = () => {
       });
 
       // If Cloud Storage is not configured, inform administrator and offer fallback
-      if (!presignRes.configured && presignRes.driver !== 'b2' && presignRes.driver !== 'r2') {
+      if (!presignRes.uploadUrl && !presignRes.configured && presignRes.driver !== 'b2' && presignRes.driver !== 'r2') {
         setUploadError(
           presignRes.message ||
           'Cloud storage is not configured on Render yet. To enable direct uploads to Backblaze B2, set STORAGE_DRIVER=b2, B2_KEY_ID, B2_APPLICATION_KEY, B2_BUCKET_NAME, B2_ENDPOINT, and B2_REGION. You can use YouTube video lectures immediately.'
@@ -265,7 +265,8 @@ export const AdminCourseContentPage = () => {
         return;
       }
 
-      const { uploadUrl, storageKey: key, publicUrl, driver: activeDriver } = presignRes;
+      const { uploadUrl, storageKey: key, publicUrl } = presignRes;
+      const activeDriver = presignRes.driver || storageStatus?.driver || 'b2';
 
       const fallbackToServerUpload = () => {
         if (file.size > 100 * 1024 * 1024) {
