@@ -52,12 +52,13 @@ export const getLmsClassroomData = async (req, res, next) => {
       for (const mod of courseData.modules) {
         if (mod.lectures) {
           for (const lec of mod.lectures) {
-            // Sign private video URLs
+            // Sign private video URLs (including re-signing any stored B2/R2 URLs)
             if (
               lec.videoSource === 'b2' ||
               lec.videoSource === 'r2' ||
-              (lec.videoSource === 'upload' && !lec.videoUrl.startsWith('http')) ||
-              (lec.storageKey && !lec.videoUrl.startsWith('http'))
+              lec.videoSource === 'upload' ||
+              lec.storageKey ||
+              (lec.videoUrl && (lec.videoUrl.includes('backblazeb2.com') || lec.videoUrl.includes('r2.cloudflarestorage.com')))
             ) {
               try {
                 lec.videoUrl = await storageService.getPlaybackUrl(lec.storageKey || lec.videoUrl);
@@ -67,7 +68,7 @@ export const getLmsClassroomData = async (req, res, next) => {
             }
 
             // Sign private PDF notes
-            if (lec.notesUrl && !lec.notesUrl.startsWith('http')) {
+            if (lec.notesUrl) {
               try {
                 lec.notesUrl = await storageService.getFileUrl(lec.notesUrl);
               } catch (e) {
@@ -78,7 +79,7 @@ export const getLmsClassroomData = async (req, res, next) => {
             // Sign supplementary resources & problem sheets
             if (lec.resources && Array.isArray(lec.resources)) {
               for (const resource of lec.resources) {
-                if (resource.url && !resource.url.startsWith('http')) {
+                if (resource.url) {
                   try {
                     resource.url = await storageService.getFileUrl(resource.url);
                   } catch (e) {

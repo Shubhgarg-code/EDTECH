@@ -171,6 +171,29 @@ export const LmsClassroomPage = () => {
     }
   };
 
+  const handleRefreshClassroom = async () => {
+    try {
+      const data = await api.get(`/learn/classroom/${courseId}`);
+      if (data.success && data.course) {
+        setCourse(data.course);
+        if (data.progress) setProgress(data.progress);
+        if (currentLecture) {
+          for (const mod of data.course.modules) {
+            const updatedLec = mod.lectures.find((l) => l._id === currentLecture._id);
+            if (updatedLec) {
+              setCurrentLecture(updatedLec);
+              return true;
+            }
+          }
+        }
+        return true;
+      }
+    } catch {
+      // Handled by VideoPlayer error state
+    }
+    return false;
+  };
+
   const handleSubmitAssignment = async (e) => {
     e.preventDefault();
     if (!selectedAssignmentId) {
@@ -311,8 +334,13 @@ export const LmsClassroomPage = () => {
                   isCompleted={isCurrentCompleted}
                   onToggleComplete={handleToggleComplete}
                   onProgressUpdate={handleProgressTimeSync}
-                  initialTime={progress?.lastWatchTimeSeconds || 0}
+                  initialTime={
+                    progress?.currentLectureId === currentLecture?._id
+                      ? progress?.lastWatchTimeSeconds || 0
+                      : 0
+                  }
                   onNextLecture={handleNextLecture}
+                  onRefreshUrl={handleRefreshClassroom}
                 />
               </div>
 

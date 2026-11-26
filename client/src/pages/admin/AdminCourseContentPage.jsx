@@ -267,6 +267,63 @@ export const AdminCourseContentPage = () => {
 
       const { uploadUrl, storageKey: key, publicUrl, driver: activeDriver } = presignRes;
 
+      const fallbackToServerUpload = () => {
+        if (file.size > 100 * 1024 * 1024) {
+          setUploadError('Direct B2 upload blocked by CORS and file exceeds 100 MB server relay limit. Please configure B2 bucket CORS.');
+          showToast('Upload failed: B2 CORS required for files > 100 MB.', 'error');
+          setIsUploadingVideo(false);
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+        const token = localStorage.getItem('math_token') || localStorage.getItem('zenith_token');
+        const relayXhr = new XMLHttpRequest();
+        setActiveUploadXhr(relayXhr);
+        setUploadProgress(0);
+
+        relayXhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            setUploadProgress(Math.round((event.loaded / event.total) * 100));
+          }
+        };
+
+        relayXhr.onload = () => {
+          setActiveUploadXhr(null);
+          try {
+            const data = JSON.parse(relayXhr.responseText || '{}');
+            if (relayXhr.status >= 200 && relayXhr.status < 300 && data.success && data.media) {
+              const storedKey = data.media.filename;
+              setStorageKey(storedKey);
+              setVideoUrl(storedKey);
+              setVideoSource(activeDriver === 'b2' ? 'b2' : (activeDriver === 'r2' ? 'r2' : 'b2'));
+              setUploadProgress(100);
+              setIsUploadingVideo(false);
+              showToast('Video uploaded to Backblaze B2! 🎉', 'success');
+              return;
+            }
+            setUploadError(data.message || `Upload failed with status ${relayXhr.status}.`);
+          } catch {
+            setUploadError(`Upload failed with status ${relayXhr.status}.`);
+          }
+          showToast('Video upload failed.', 'error');
+          setIsUploadingVideo(false);
+        };
+
+        relayXhr.onerror = () => {
+          setActiveUploadXhr(null);
+          setUploadError('Network error during video upload. Please check your internet connection.');
+          showToast('Upload network error.', 'error');
+          setIsUploadingVideo(false);
+        };
+
+        relayXhr.open('POST', `${API_BASE}/media/upload`, true);
+        if (token) {
+          relayXhr.setRequestHeader('Authorization', `Bearer ${token}`);
+        }
+        relayXhr.send(formData);
+      };
+
       // 2. Direct upload to Backblaze B2 / Cloud Storage using XMLHttpRequest to monitor progress
       const xhr = new XMLHttpRequest();
       setActiveUploadXhr(xhr);
@@ -301,6 +358,8 @@ export const AdminCourseContentPage = () => {
           } catch {
             // Optional registration log
           }
+        } else if (xhr.status === 403 || xhr.status === 0) {
+          fallbackToServerUpload();
         } else {
           setUploadError(`Storage direct upload failed with status ${xhr.status}.`);
           showToast('Video upload failed.', 'error');
@@ -310,9 +369,8 @@ export const AdminCourseContentPage = () => {
 
       xhr.onerror = () => {
         setActiveUploadXhr(null);
-        setUploadError('Network error during upload. Please verify B2 bucket CORS settings or internet connection.');
-        showToast('Upload network error. Check B2 CORS.', 'error');
-        setIsUploadingVideo(false);
+        // Direct B2 PUT blocked by CORS or network — fall back to authenticated backend upload
+        fallbackToServerUpload();
       };
 
       xhr.open('PUT', uploadUrl, true);
@@ -359,8 +417,8 @@ export const AdminCourseContentPage = () => {
         body
       });
       const data = await res.json();
-      if (data.success && data.media?.url) {
-        setNotesUrl(data.media.url);
+      if (data.success && data.media) {
+        setNotesUrl(data.media.filename || data.media.url);
         showToast('PDF notes attached successfully!', 'success');
       } else {
         showToast(data.message || 'PDF upload failed.', 'error');

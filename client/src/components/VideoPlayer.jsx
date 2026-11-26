@@ -25,7 +25,8 @@ export const VideoPlayer = ({
   onToggleComplete,
   onProgressUpdate,
   initialTime = 0,
-  onNextLecture
+  onNextLecture,
+  onRefreshUrl
 }) => {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
@@ -39,17 +40,30 @@ export const VideoPlayer = ({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
   const [speedMenuOpen, setSpeedMenuOpen] = useState(false);
+  const [isBuffering, setIsBuffering] = useState(false);
+  const [videoError, setVideoError] = useState('');
+  const [hasRetriedRefresh, setHasRetriedRefresh] = useState(false);
 
   // Determine if this is a YouTube lecture
-  const detectedYouTubeId = youtubeVideoId || (videoSource === 'youtube' || videoSource === 'external' ? extractYouTubeId(src) : extractYouTubeId(src));
+  const detectedYouTubeId = youtubeVideoId || extractYouTubeId(src);
   const isYouTube = Boolean(detectedYouTubeId || videoSource === 'youtube');
 
-  // Set initial watch time once loaded (for HTML5 video)
+  // Reset player state & force media reload when src changes
   useEffect(() => {
-    if (!isYouTube && videoRef.current && initialTime > 0) {
-      videoRef.current.currentTime = initialTime;
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setDuration(0);
+    setVideoError('');
+    setIsBuffering(Boolean(src && !isYouTube));
+    if (!isYouTube && videoRef.current && src) {
+      videoRef.current.load();
     }
-  }, [src, initialTime, isYouTube]);
+  }, [src, isYouTube]);
+
+  // Reset retry flag only when switching to a different lecture title/source
+  useEffect(() => {
+    setHasRetriedRefresh(false);
+  }, [title]);
 
   // Periodic progress saving (every 8 seconds for HTML5 video)
   useEffect(() => {
@@ -64,13 +78,19 @@ export const VideoPlayer = ({
   }, [onProgressUpdate, isYouTube]);
 
   const togglePlay = () => {
-    if (!videoRef.current) return;
+    if (!videoRef.current || !src || videoError) return;
     if (videoRef.current.paused) {
-      videoRef.current.play();
-      setIsPlaying(true);
+      const playPromise = videoRef.current.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch((err) => {
+          setIsPlaying(false);
+          if (err?.name !== 'AbortError') {
+            setVideoError('Unable to start playback. Please click retry or check your connection.');
+          }
+        });
+      }
     } else {
       videoRef.current.pause();
-      setIsPlaying(false);
     }
   };
 
@@ -81,7 +101,38 @@ export const VideoPlayer = ({
 
   const handleLoadedMetadata = () => {
     if (!videoRef.current) return;
-    setDuration(videoRef.current.duration);
+    const dur = videoRef.current.duration || 0;
+    setDuration(dur);
+    setIsBuffering(false);
+    setVideoError('');
+    if (initialTime > 0 && (dur === 0 || initialTime < dur - 2)) {
+      videoRef.current.currentTime = initialTime;
+      setCurrentTime(initialTime);
+    }
+    videoRef.current.playbackRate = playbackSpeed;
+  };
+
+  const handleVideoError = async () => {
+    setIsPlaying(false);
+    setIsBuffering(false);
+    const mediaErr = videoRef.current?.error;
+
+    // Automatically refresh signed URL once if stream fails (e.g. expired 1h token)
+    if (!hasRetriedRefresh && onRefreshUrl) {
+      setHasRetriedRefresh(true);
+      setIsBuffering(true);
+      const refreshed = await onRefreshUrl();
+      if (refreshed) return;
+      setIsBuffering(false);
+    }
+
+    const codeMessages = {
+      1: 'Video loading was aborted.',
+      2: 'Network error while streaming video. Please check your connection and retry.',
+      3: 'Video decoding failed. The file may be corrupted or use an unsupported codec.',
+      4: 'Video stream could not be loaded (expired link or unsupported format).'
+    };
+    setVideoError(codeMessages[mediaErr?.code] || 'Video playback failed. Please click Retry to refresh the stream.');
   };
 
   const handleSeek = (e) => {
@@ -231,8 +282,20 @@ export const VideoPlayer = ({
   }
 
   // ----------------------------------------------------
-  // HTML5 DIRECT VIDEO PLAYER (MP4 / WebM / R2 signed URL)
+  // HTML5 DIRECT VIDEO PLAYER (MP4 / WebM / B2 signed URL)
   // ----------------------------------------------------
+  if (!src) {
+    return (
+      <div className="relative bg-[#070B14] border border-[#1E293B] rounded-2xl overflow-hidden aspect-video shadow-2xl flex flex-col items-center justify-center p-6 text-center">
+        <AlertCircle className="w-10 h-10 text-amber-400 mb-3" />
+        <h4 className="text-base font-bold text-white mb-1">No Video Available</h4>
+        <p className="text-xs text-[#A7B5CC] max-w-md">
+          This lecture does not have a playable video uploaded yet. Check the mathematical notes or handouts below.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div
       ref={containerRef}
@@ -241,10 +304,20 @@ export const VideoPlayer = ({
       className="relative bg-slate-950 rounded-2xl overflow-hidden aspect-video shadow-2xl flex flex-col justify-end group select-none border border-[#3B82F6]/20"
     >
       <video
+        key={src}
         ref={videoRef}
         src={src}
+        preload="metadata"
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
+        onPlay={() => {
+          setIsPlaying(true);
+          setIsBuffering(false);
+        }}
+        onPause={() => setIsPlaying(false)}
+        onWaiting={() => setIsBuffering(true)}
+        onCanPlay={() => setIsBuffering(false)}
+        onError={handleVideoError}
         onEnded={() => {
           setIsPlaying(false);
           onToggleComplete?.(true);
@@ -254,8 +327,42 @@ export const VideoPlayer = ({
         playsInline
       />
 
+      {/* Buffering Indicator */}
+      {isBuffering && !videoError && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/30 pointer-events-none z-10">
+          <div className="w-10 h-10 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+        </div>
+      )}
+
+      {/* Error Overlay */}
+      {videoError && (
+        <div className="absolute inset-0 bg-[#070B14]/95 flex flex-col items-center justify-center p-6 text-center z-20">
+          <AlertCircle className="w-11 h-11 text-rose-500 mb-3" />
+          <h4 className="text-base font-bold text-white mb-1">Stream Playback Error</h4>
+          <p className="text-xs text-[#A7B5CC] max-w-md mb-4">{videoError}</p>
+          <button
+            type="button"
+            onClick={async () => {
+              setVideoError('');
+              setIsBuffering(true);
+              if (onRefreshUrl) {
+                const ok = await onRefreshUrl();
+                if (ok) return;
+              }
+              if (videoRef.current) {
+                videoRef.current.load();
+              }
+              setIsBuffering(false);
+            }}
+            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition cursor-pointer"
+          >
+            Retry / Refresh Stream
+          </button>
+        </div>
+      )}
+
       {/* Floating Center Play Button if paused */}
-      {!isPlaying && (
+      {!isPlaying && !videoError && !isBuffering && (
         <button
           onClick={togglePlay}
           className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-blue-600/90 text-white flex items-center justify-center shadow-xl hover:scale-110 transition-transform active:scale-95 cursor-pointer z-10"

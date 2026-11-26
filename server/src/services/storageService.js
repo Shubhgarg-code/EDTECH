@@ -243,33 +243,63 @@ class StorageService {
   }
 
   /**
+   * Extract internal object key if a full B2/R2 URL for our bucket was accidentally stored.
+   */
+  extractCloudKey(filename) {
+    if (!filename || (!filename.startsWith('http://') && !filename.startsWith('https://'))) {
+      return filename;
+    }
+    if (!this.bucket) return null;
+    try {
+      const parsed = new URL(filename);
+      const host = parsed.hostname.toLowerCase();
+      const isOurB2 = host.includes('backblazeb2.com') && (host.startsWith(`${this.bucket.toLowerCase()}.`) || parsed.pathname.startsWith(`/${this.bucket}/`));
+      const isOurR2 = host.includes('r2.cloudflarestorage.com') && (host.startsWith(`${this.bucket.toLowerCase()}.`) || parsed.pathname.startsWith(`/${this.bucket}/`));
+      if (!isOurB2 && !isOurR2) return null;
+
+      let key = decodeURIComponent(parsed.pathname).replace(/^\/+/, '');
+      if (key.startsWith(`${this.bucket}/`)) {
+        key = key.slice(this.bucket.length + 1);
+      }
+      return key || null;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
    * Return a URL that can be used by the frontend to stream or download the file.
    * For private B2/R2 buckets, returns a short-lived signed GET URL (default 1 hour expiry).
    */
   async getFileUrl(filename, expiresIn = 3600) {
     if (!filename) return '';
 
-    // If filename is already a full URL (e.g. YouTube, external CDN)
+    let targetKey = filename;
     if (filename.startsWith('http://') || filename.startsWith('https://')) {
-      return filename;
+      const extracted = this.extractCloudKey(filename);
+      if (!extracted) {
+        // External URL (e.g. YouTube, external CDN)
+        return filename;
+      }
+      targetKey = extracted;
     }
 
     if (this.isCloudStorageConfigured()) {
       if (this.publicBase) {
-        return `${this.publicBase}/${filename}`;
+        return `${this.publicBase}/${targetKey}`;
       }
       try {
-        const command = new GetObjectCommand({ Bucket: this.bucket, Key: filename });
+        const command = new GetObjectCommand({ Bucket: this.bucket, Key: targetKey });
         const signed = await getSignedUrl(this.s3Client, command, { expiresIn });
         return signed;
       } catch (err) {
-        console.warn(`[StorageService] Failed to sign ${this.driver} GET URL for "${filename}":`, err.message);
+        console.warn(`[StorageService] Failed to sign ${this.driver} GET URL for "${targetKey}":`, err.message);
         return filename;
       }
     }
 
     // Local development – serve via static /uploads route
-    return `/uploads/${path.basename(filename)}`;
+    return `/uploads/${path.basename(targetKey)}`;
   }
 
   /**

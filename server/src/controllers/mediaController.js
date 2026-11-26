@@ -93,6 +93,8 @@ export const getPresignedUpload = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
+      driver: result.driver,
+      configured: result.configured,
       uploadUrl: result.uploadUrl,
       storageKey: result.storageKey,
       publicUrl: result.publicUrl,
