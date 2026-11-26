@@ -231,7 +231,7 @@ export const VideoPlayer = ({
         className="relative bg-slate-950 rounded-2xl overflow-hidden aspect-video shadow-2xl flex flex-col justify-between group select-none border border-[#3B82F6]/20"
       >
         {/* Top Overlay Header */}
-        <div className="absolute top-0 inset-x-0 p-3 sm:p-4 bg-gradient-to-b from-black/90 via-black/50 to-transparent flex items-center justify-between text-white z-20 pointer-events-auto">
+        <div className="absolute top-0 inset-x-0 p-3 sm:p-4 bg-gradient-to-b from-black/90 via-black/50 to-transparent flex items-center justify-between text-white z-20 pointer-events-none">
           <div className="flex items-center gap-2 max-w-[70%]">
             <span className="p-1 rounded bg-red-600/90 text-white shrink-0" title="YouTube Lecture">
               <Youtube className="w-3.5 h-3.5" />
@@ -239,7 +239,7 @@ export const VideoPlayer = ({
             <h4 className="text-xs sm:text-sm font-semibold truncate text-white">{title}</h4>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 pointer-events-auto">
             <button
               type="button"
               onClick={() => onToggleComplete?.(!isCompleted)}
@@ -269,12 +269,13 @@ export const VideoPlayer = ({
         {/* Embedded Iframe */}
         <div className="w-full h-full">
           <iframe
+            key={embedUrl}
             src={embedUrl}
             title={title || 'Mathematics Academy Lecture'}
             className="w-full h-full border-0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen
-            loading="lazy"
           />
         </div>
       </div>

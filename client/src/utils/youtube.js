@@ -63,5 +63,5 @@ export const getYouTubeEmbedUrl = (videoId, options = {}) => {
   const rel = options.rel ?? 0;
   const modestbranding = options.modestbranding ?? 1;
   const enablejsapi = options.enablejsapi ?? 1;
-  return `https://www.youtube-nocookie.com/embed/${id}?rel=${rel}&modestbranding=${modestbranding}&enablejsapi=${enablejsapi}`;
+  return `https://www.youtube.com/embed/${id}?rel=${rel}&modestbranding=${modestbranding}&enablejsapi=${enablejsapi}`;
 };
