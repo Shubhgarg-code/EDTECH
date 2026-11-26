@@ -1,4 +1,5 @@
 import path from 'path';
+import mongoose from 'mongoose';
 import { Media } from '../models/Media.js';
 import { getCategoryFromMime } from '../middleware/upload.js';
 import { storageService } from '../services/storageService.js';
@@ -100,7 +101,7 @@ export const confirmDirectUpload = async (req, res, next) => {
       originalName: originalName || path.basename(storageKey),
       mimeType: mimeType || 'video/mp4',
       size: size || 0,
-      url: '',
+      url: storageKey,
       category,
       uploadedBy: req.user ? req.user._id : null
     });
@@ -138,7 +139,7 @@ export const uploadMediaFile = async (req, res, next) => {
         originalName: originalname,
         mimeType: mimetype,
         size,
-        url: '', // Do not persist signed URLs; dynamically generated on retrieval
+        url: storedName, // Non-empty placeholder satisfies DB; dynamic signed URL generated on retrieval
         category,
         uploadedBy: req.user ? req.user._id : null
       });
@@ -217,14 +218,30 @@ export const getAllMedia = async (req, res, next) => {
 export const deleteMedia = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const media = await Media.findById(id);
+    let media = null;
+    let fileKey = null;
 
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      media = await Media.findById(id);
+      if (media) fileKey = media.filename;
+    }
+
+    // Fallback: match by filename or direct storageKey
     if (!media) {
+      media = await Media.findOne({ filename: id });
+      if (media) {
+        fileKey = media.filename;
+      } else if (req.query.key || id.includes('/') || id.includes('.')) {
+        fileKey = req.query.key || id;
+      }
+    }
+
+    if (!media && !fileKey) {
       return res.status(404).json({ success: false, message: 'Media file not found.' });
     }
 
     // Attempt storage deletion
-    const deleted = await storageService.deleteFile(media.filename);
+    const deleted = await storageService.deleteFile(fileKey);
     if (!deleted) {
       return res.status(500).json({
         success: false,
@@ -232,8 +249,10 @@ export const deleteMedia = async (req, res, next) => {
       });
     }
 
-    // Delete database record only after storage deletion succeeds
-    await Media.findByIdAndDelete(id);
+    // Delete database record only after storage deletion succeeds (if record existed)
+    if (media) {
+      await Media.findByIdAndDelete(media._id);
+    }
 
     res.status(200).json({
       success: true,
