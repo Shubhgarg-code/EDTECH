@@ -20,6 +20,26 @@ export const getStorageStatus = async (req, res, next) => {
 };
 
 /**
+ * Verify whether an object exists in storage via HeadObject
+ */
+export const verifyMediaObject = async (req, res, next) => {
+  try {
+    const { key } = req.query;
+    if (!key) {
+      return res.status(400).json({ success: false, message: 'Object key is required.' });
+    }
+    const exists = await storageService.checkFileExists(key);
+    res.status(200).json({
+      success: true,
+      exists,
+      key
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * Generate a presigned PUT URL for direct frontend-to-R2 upload.
  * Large videos upload straight to Cloudflare R2 without passing through Render's Node memory buffer.
  */

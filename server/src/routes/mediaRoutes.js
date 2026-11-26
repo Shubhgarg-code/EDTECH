@@ -5,7 +5,8 @@ import {
   deleteMedia,
   getStorageStatus,
   getPresignedUpload,
-  confirmDirectUpload
+  confirmDirectUpload,
+  verifyMediaObject
 } from '../controllers/mediaController.js';
 import { upload } from '../middleware/upload.js';
 import { protect } from '../middleware/auth.js';
@@ -17,6 +18,7 @@ const router = express.Router();
 router.use(protect, authorize('admin'));
 
 router.get('/status', getStorageStatus);
+router.get('/verify', verifyMediaObject);
 router.post('/presign-upload', getPresignedUpload);
 router.post('/confirm-upload', confirmDirectUpload);
 router.post('/upload', upload.single('file'), uploadMediaFile);
